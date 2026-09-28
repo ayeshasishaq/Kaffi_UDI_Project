@@ -1,0 +1,6 @@
+@Kaffi.Backend_HostAddress = http://localhost:5054
+
+GET {{Kaffi.Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
