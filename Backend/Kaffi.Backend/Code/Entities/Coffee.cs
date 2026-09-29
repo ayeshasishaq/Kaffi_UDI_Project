@@ -11,5 +11,5 @@ public class Coffee
     public int VarietyId { get; set; }
     public Variety Variety { get; set; } = null!;
 
-    public List<Coffee_Flavour> CoffeeFlavours { get; set; } = new();
+    public List<CoffeeFlavour> CoffeeFlavours { get; set; } = new();
 }

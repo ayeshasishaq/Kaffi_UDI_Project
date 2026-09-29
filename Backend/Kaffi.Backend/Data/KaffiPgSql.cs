@@ -6,23 +6,28 @@ namespace Kaffi.Backend.Data.Context;
 
 public class KaffiPgSql : IKaffiDao
 {
-    public int CreateCoffee(Coffee kaffi)
+    private readonly KaffiContext _context;
+
+    public KaffiPgSql(KaffiContext context)
+{
+    _context = context;
+}
+    public async Task<int> CreateCoffeeAsync(Coffee kaffi)
     {
-        using KaffiContext db = new();
-        db.Coffee.Add(kaffi);
-        db.SaveChanges();
+
+        _context.Coffee.Add(kaffi);
+        await _context.SaveChangesAsync();
         return kaffi.Id;
     }
 
-    public Coffee? GetCoffee(int id)
+    public Task<Coffee?> GetCoffeeAsync(int id)
     {
-        using KaffiContext db = new();
-        return db.Coffee
+        return _context.Coffee
             .Include(c => c.Variety)
             .Include(c => c.Country)
                 .ThenInclude(co => co.Continent)
             .Include(c => c.CoffeeFlavours)
                 .ThenInclude(cf => cf.Flavour)
-            .FirstOrDefault(c => c.Id == id);
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 }

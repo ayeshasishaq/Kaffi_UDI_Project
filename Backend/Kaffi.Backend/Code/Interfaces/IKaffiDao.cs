@@ -4,6 +4,6 @@ namespace Kaffi.Backend.Code.Interfaces;
 
 public interface IKaffiDao
 {
-    int CreateCoffee(Coffee kaffi);
-    Coffee? GetCoffee(int id);
+    Task<int> CreateCoffeeAsync(Coffee kaffi);
+    Task<Coffee?> GetCoffeeAsync(int id);
 }
