@@ -1,0 +1,40 @@
+.content{
+    display: flex;
+    flex-direction: column;
+    gap: 42px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 100px;
+}
+
+.flavour-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(7, auto);
+  gap: 10px 30px;
+}
+
+.flavour {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flavour input {
+  background-color: var(--bg);
+  accent-color: var(--secondary);
+  border: 1px solid var(--border);
+  width: 20px;
+  height: 20px;
+}
+
+.text-container {
+    width: 600px;
+}
+
+.nvgt-container {
+  margin-top: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
