@@ -15,9 +15,9 @@ namespace Kaffi.Backend.Controllers
 
         [HttpGet]
         [Route("/{id}")]
-        public IActionResult GetCoffe(int id)
+        public async Task<IActionResult> GetCoffe(int id)
         {
-            return Ok(_kaffiDao.GetCoffeeAsync(id));
+            return Ok(await _kaffiDao.GetCoffeeAsync(id));
         }
     }
 }
