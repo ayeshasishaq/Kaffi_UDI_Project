@@ -84,7 +84,6 @@ values (4, 'Indonesia');
 insert into country  (continentid, name)
 values (2, 'Colombia');
 
-
 insert into country  (continentid, name)
 values (3, 'Panama');
 
