@@ -1,6 +1,6 @@
-using Kaffi.Backend.Data.Context;
 using Kaffi.Backend.Code.Interfaces;
 using Kaffi.Backend.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kaffi.Backend
 {
@@ -8,53 +8,32 @@ namespace Kaffi.Backend
     {
         public static void Main(string[] args)
         {
-            IKaffiDao kaffiDao = new KaffiPgSql();
-
-            kaffiDao.CreateCoffee(new Code.Entities.Coffee
-            {
-                Name = "Coffee",
-                Variety = new Code.Entities.Variety { Name = "Arabica" },
-                Country = new Code.Entities.Country
-                {
-                    Name = "Ethiopia",
-                    Continent = new Code.Entities.Continent { Name = "Africa" }
-                },
-                CoffeeFlavours = new List<Code.Entities.Coffee_Flavour>
-                {
-                    new Code.Entities.Coffee_Flavour
-                    {
-                        Flavour = new Code.Entities.Flavour { Name = "Fruity" }
-                    },
-                    new Code.Entities.Coffee_Flavour
-                    {
-                        Flavour = new Code.Entities.Flavour { Name = "Nutty" }
-                    }
-                }
-            });
-
-
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddDbContext<KaffiContext>();
+            builder.Services.AddDbContext<KaffiContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("KaffiDb"),
+                    sql => sql.EnableRetryOnFailure()));
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<IKaffiDao, KaffiPgSql>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
