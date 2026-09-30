@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Backend/">
+    <Project Path="Backend/Kaffi.Backend.Tests/Kaffi.Backend.Tests.csproj" />
+  </Folder>
   <Project Path="Backend/Kaffi.Backend/Kaffi.Backend.csproj" />
   <Project Path="Frontend/Kaffi.Frontend/kaffi.frontend.esproj">
     <Build />
