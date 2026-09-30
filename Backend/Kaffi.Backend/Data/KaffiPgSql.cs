@@ -1,8 +1,6 @@
 using Kaffi.Backend.Code.Entities;
 using Kaffi.Backend.Code.Interfaces;
 using Kaffi.Backend.DTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kaffi.Backend.Data.Context;
@@ -15,8 +13,6 @@ public class KaffiPgSql : IKaffiDao
     {
     _context = context;
     }
-
-    // ToDo, Kanskje bruke DAO her siden vi ikke trenger ID'er men kun verdiene, typ navn på land, kontinent etc?
     public Task<Coffee?> GetCoffeeByIdAsync(int id)
     {
         return _context.Coffee
@@ -41,8 +37,6 @@ public class KaffiPgSql : IKaffiDao
         await _context.SaveChangesAsync();
         return true;
     }
-
-    // ToDo Tommorow denne legger til countryID men landet følger ikke med
     public async Task<Coffee> CreateCoffeeAsync(CreateCoffee request)
     {
         
@@ -66,5 +60,23 @@ public class KaffiPgSql : IKaffiDao
         _context.Coffee.Add(coffee);
         await _context.SaveChangesAsync();
         return coffee;
+    }
+
+    public async Task<List<ShowCoffee>> GetCoffeeBasedOnFlavourSelected(List<int> listOfFlavourIds)
+    {
+
+        var coffee = await _context.Coffee.
+                                           Where(c => c.CoffeeFlavours.
+                                           Any(x => listOfFlavourIds.Contains(x.FlavourId))).
+                                           Select(c => new ShowCoffee
+                                           {
+                                               CoffeeName = c.Name,
+                                               CountryName = c.Country.Name,
+                                               ContinentName = c.Country.Continent.Name,
+                                               Variety = c.Variety.Name,
+                                               Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList()
+                                           }).ToListAsync();
+        return coffee;
+        
     }
 }
