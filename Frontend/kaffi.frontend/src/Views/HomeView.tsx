@@ -6,11 +6,14 @@ import "../Style/HomeViewStyle.css"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { flavours, coffees, findMatchingCoffee } from "../Data/TestData";
+import type {Coffee} from "../Data/TestData";;
+import {fetchData} from "../API/Api_kaffi";;
 
 export function HomeView() {
     const [selected, setSelected] = useState<number[]>([]);
     const [noMatch, setNoMatch] = useState(false);
     const navigate = useNavigate();
+    const [coffee, setCoffee] = useState();
 
 
     function toggleFlavour(id: number) {
@@ -29,6 +32,14 @@ export function HomeView() {
         }
     }
 
+    const handleSearch = async () => {
+        const result = await fetchData();;
+
+        setCoffee(result);;
+
+
+    }
+                   
     return (
         <>
         <section className="content">
@@ -56,8 +67,11 @@ export function HomeView() {
                 ))}
             </div>
 
+
+
             {noMatch && <p>Fant ingen kaffe som matcher. Prøv å velge flere smaker.</p>}
-            <Btn onClick={handleRecommend}>Få anbefaling</Btn>
+            <Btn onClick={handleSearch
+            }>Få anbefaling</Btn>
         </section>
         </>
     )

@@ -73,7 +73,7 @@ export const countries = [
 
 type Flavour = { id: number; name: string };
 
-type Coffee = {
+export type Coffee = {
     id: number;
     name: string;
     country: { id: number; name: string; continent: { id: number; name: string } };
