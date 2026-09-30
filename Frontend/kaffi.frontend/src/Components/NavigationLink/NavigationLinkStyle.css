@@ -1,0 +1,20 @@
+.nvgt-link{
+    padding: 8px;
+    width: 120px;
+    background-color: var(--secondary);
+    color: var(--text-b);
+    font-size: 0.8rem;
+    border-radius: 99px;
+    border: 0px;
+    transition: transform 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.nvgt-link:hover{
+    transform: scale(1.1);
+    background-color: #485A42;
+    
+}
