@@ -1,0 +1,14 @@
+.my-dropdown .dropdown-toggle {
+    --bs-btn-bg: var(--surface);
+    --bs-btn-border-color: var(--border);
+    --bs-btn-hover-bg: var(--secondary);
+    --bs-btn-hover-border-color: var(--secondary);
+    --bs-btn-active-bg: var(--secondary);
+    --bs-btn-active-border-color: var(--secondary);
+    --bs-btn-color: var(--text);
+    width: 320px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

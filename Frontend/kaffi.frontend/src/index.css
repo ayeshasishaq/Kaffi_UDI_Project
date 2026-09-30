@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
+
 :root {
   --text: #1F1F1F;
   --text-b: #fff;
@@ -6,13 +10,9 @@
   --border: #E7E0D8;
   --primary: #4A3428;
   --secondary: #7A8B74;
-  --accent: #C68B59;
+  --accent: #8A4B38;
   --border: #E7E0D8;
 
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -62,22 +62,22 @@
 
 body {
   margin: 0;
+  background-color: var(--bg);
 }
 
 h1,
 h2 {
-  font-family: var(--heading);
-  font-weight: 500;
+  font-family: 'Manrope';
+  font-weight: 800;
   color: var(--text);
 }
 
 h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
-  margin: 32px 0;
+  margin: 0 auto;
   @media (max-width: 1024px) {
     font-size: 36px;
-    margin: 20px 0;
   }
 }
 h2 {
@@ -91,6 +91,7 @@ h2 {
 }
 p {
   margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .logo{
