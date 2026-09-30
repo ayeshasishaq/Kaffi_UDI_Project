@@ -1,0 +1,12 @@
+.admin-header {
+    color: var(--accent)
+}
+
+.logo-txt {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 36px;
+}
+
+.header-container {
+    gap: 2px;
+}

@@ -1,0 +1,37 @@
+.coffee-beans {
+    margin: 10px auto;
+    width: 220px;
+}
+
+.coffee-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.flavours-container {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
+.attributes-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.coffee-card {
+    background-color: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 0px auto 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+}
