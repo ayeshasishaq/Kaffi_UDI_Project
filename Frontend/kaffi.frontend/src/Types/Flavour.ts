@@ -1,0 +1,1 @@
+export type Flavour = { id: number; name: string };

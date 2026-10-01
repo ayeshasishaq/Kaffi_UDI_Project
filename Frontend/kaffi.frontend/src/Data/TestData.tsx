@@ -1,3 +1,5 @@
+import type { Coffee } from "../Types/Coffee";
+
 export const flavours = [
   { id: 1, name: "Melkesjokolade" },
   { id: 2, name: "Nøtter" },
@@ -67,23 +69,30 @@ export const countries = [
         name: "Indonesia",
         continent: { id: 4, name: "Mellom-Amerika" },
     },
-
-
 ]
 
-type Flavour = { id: number; name: string };
+export const varieties = [
+    {
+        id: 1,
+        name: "Heirloom"
+    },
+        {
+        id: 2,
+        name: "Bourbon"
+    },
+        {
+        id: 3,
+        name: "Typica"
+    },
+        {
+        id: 4,
+        name: "Pacamara"
+    },
+]
 
-type Coffee = {
-    id: number;
-    name: string;
-    country: { id: number; name: string; continent: { id: number; name: string } };
-    variety: { id: number; name: string };
-    flavours: Flavour[];
-};
-
-    export function findMatchingCoffee(selectedIds: number[], coffees: Coffee[]) {
-        return coffees.find(
-        (coffee) =>
-        coffee.flavours.filter((f) => selectedIds.includes(f.id)).length >= 2
-        );
-    }
+export function findMatchingCoffee(selectedIds: number[], coffees: Coffee[]) {
+    return coffees.find(
+    (coffee) =>
+    coffee.flavours.filter((f) => selectedIds.includes(f.id)).length >= 2
+    );
+}

@@ -1,19 +1,35 @@
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import '../DropDown/DropDown.css';
-import type { Country } from '../../Types/Coutry';
 
-type DropDownProps = {
-    items: Country[];
-    onSelect?: (country: Country) => void;
+type Option = {
+    name: string;
+    id: number;
+}
+
+type DropDownProps<T extends Option >= {
+    items: T[];
+    selected: T | null;
+    placeholder: string;
+    onSelect: (item: T) => void;
+    getLabel?: (item: T) => string;
 };
 
-function DropDown({ items, onSelect }: DropDownProps) {
+function DropDown<T extends Option> ({
+    items, 
+    selected, 
+    placeholder, 
+    onSelect,
+    getLabel = (item) => item.name
+}: DropDownProps<T> ){
     return (
-        <DropdownButton id="country-dropdown" title="Velg land" className="my-dropdown">
-            {items.map((country) => (
-                <Dropdown.Item key={country.id} onClick={() => onSelect?.(country)}>
-                    {country.name}
+        <DropdownButton 
+        id={`dropdown-${placeholder}`}
+        title={selected ? getLabel(selected) : placeholder} 
+        className="my-dropdown">
+            {items.map((item) => (
+                <Dropdown.Item key={item.id} onClick={() => onSelect(item)}>
+                    {getLabel(item)}
                 </Dropdown.Item>
             ))}
         </DropdownButton>

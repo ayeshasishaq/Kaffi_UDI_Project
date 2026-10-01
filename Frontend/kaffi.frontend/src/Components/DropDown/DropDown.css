@@ -7,7 +7,7 @@
     --bs-btn-active-border-color: var(--secondary);
     --bs-btn-color: var(--text);
     width: 320px;
-    margin-top: 20px;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;

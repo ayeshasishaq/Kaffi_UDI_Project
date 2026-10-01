@@ -1,0 +1,1 @@
+export type Variety = { id: number; name: string };
