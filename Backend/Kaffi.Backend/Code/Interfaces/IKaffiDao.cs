@@ -14,4 +14,7 @@ public interface IKaffiDao
 
     Task<ShowCoffeeResponse> GetRecCoffee(List<int> listOffFlavourIds);
 
+    Task<List<CountryDTO>> GetAllCountriesAsync();
+    Task<List<FlavourDTO>> GetAllFlavoursAsync();
+
 }
