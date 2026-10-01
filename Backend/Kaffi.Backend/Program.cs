@@ -10,7 +10,18 @@ namespace Kaffi.Backend
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            
+            builder.Services.AddCors(options  =>
+            {
+                options.AddPolicy("AllowMyFrontend",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:53789") // Replace with your exact frontend URL
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials(); // Include this if you are using cookies/sessions
+                    });
+            });
+
             builder.Services.AddControllers()
             .AddJsonOptions(o =>
                 o.JsonSerializerOptions.ReferenceHandler =
@@ -36,6 +47,10 @@ namespace Kaffi.Backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseRouting();
+
+            app.UseCors("AllowMyFrontend");
 
             app.UseHttpsRedirection();
             app.UseAuthorization();

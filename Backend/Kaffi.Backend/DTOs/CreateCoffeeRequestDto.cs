@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kaffi.Backend.DTOs
 {
-    public class CreateCoffee
+    public class CreateCoffeeRequestDto
     {
         [Required]
         public string Name { get; set; } = string.Empty;

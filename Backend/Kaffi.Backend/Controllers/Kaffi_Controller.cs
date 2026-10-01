@@ -50,18 +50,28 @@ namespace Kaffi.Backend.Controllers
 
                 return Ok();
 
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, "Error while trying to delete coffee");
             }
         }
 
         [HttpPost]
-        [Route("/")]
-        public async Task<IActionResult> CreateCoffeeAsync(CreateCoffee request)
+        [Route("")]
+        public async Task<IActionResult> CreateCoffeeAsync(CreateCoffeeRequestDto request)
         {
             var newCoffee = await _kaffiDao.CreateCoffeeAsync(request);
             return Ok(newCoffee);
+        }
+
+        [HttpGet]
+        [Route("by-flavours")]
+
+        public async Task<IActionResult> GetCoffeeBasedOnFlavour([FromQuery] List<int> ids)
+        {
+            var coffeeList = await _kaffiDao.GetCoffeeBasedOnFlavourSelected(ids);
+            return Ok(coffeeList);
         }
     }
 }
