@@ -50,7 +50,8 @@ namespace Kaffi.Backend.Controllers
 
                 return Ok();
 
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, "Error while trying to delete coffee");
             }

@@ -11,7 +11,7 @@ public class KaffiPgSql : IKaffiDao
 
     public KaffiPgSql(KaffiContext context)
     {
-    _context = context;
+        _context = context;
     }
     public Task<Coffee?> GetCoffeeByIdAsync(int id)
     {
@@ -37,9 +37,9 @@ public class KaffiPgSql : IKaffiDao
         await _context.SaveChangesAsync();
         return true;
     }
-    public async Task<Coffee> CreateCoffeeAsync(CreateCoffee request)
+    public async Task<Coffee> CreateCoffeeAsync(CreateCoffeeRequestDto request)
     {
-        
+
         List<Flavour> flavours = await _context.Flavour.Where(f => request.FlavourIds.Contains(f.Id)).ToListAsync();
 
         var coffee = new Coffee
@@ -49,7 +49,7 @@ public class KaffiPgSql : IKaffiDao
             CountryId = request.CountryId,
         };
 
-        foreach(var Flavour in flavours)
+        foreach (var Flavour in flavours)
         {
             coffee.CoffeeFlavours.Add(new CoffeeFlavour
             {
@@ -62,13 +62,13 @@ public class KaffiPgSql : IKaffiDao
         return coffee;
     }
 
-    public async Task<List<ShowCoffee>> GetCoffeeBasedOnFlavourSelected(List<int> listOfFlavourIds)
+    // Lag en ny funksjon GetTodaysCoffee etc
+    public async Task<List<ShowCoffeeResponse>> GetCoffeeBasedOnFlavourSelected(List<int> listOfFlavourIds)
     {
-
         var coffee = await _context.Coffee.
                                            Where(c => c.CoffeeFlavours.
                                            Any(x => listOfFlavourIds.Contains(x.FlavourId))).
-                                           Select(c => new ShowCoffee
+                                           Select(c => new ShowCoffeeResponse
                                            {
                                                CoffeeName = c.Name,
                                                CountryName = c.Country.Name,
@@ -77,6 +77,5 @@ public class KaffiPgSql : IKaffiDao
                                                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList()
                                            }).ToListAsync();
         return coffee;
-        
     }
 }
