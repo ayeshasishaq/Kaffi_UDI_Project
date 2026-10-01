@@ -7,5 +7,7 @@
         public string ContinentName { get; set; } = string.Empty;
         public string Variety { get; set; } = string.Empty;
         public List<string> Flavours { get; set; }
+
+        public int MatchCount {get; set;}
     }
 }

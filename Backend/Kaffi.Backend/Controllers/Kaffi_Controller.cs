@@ -73,5 +73,13 @@ namespace Kaffi.Backend.Controllers
             var coffeeList = await _kaffiDao.GetCoffeeBasedOnFlavourSelected(ids);
             return Ok(coffeeList);
         }
+
+        [HttpGet]
+        [Route("first-match")]
+        public async Task<IActionResult> GetFirstCoffeeRecByFlavour([FromQuery] List<int> ids)
+        {
+            var coffee = await _kaffiDao.GetRecCoffee(ids);
+            return Ok(coffee);
+        }
     }
 }

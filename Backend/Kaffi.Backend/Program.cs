@@ -37,7 +37,7 @@ namespace Kaffi.Backend
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<IKaffiDao, KaffiPgSql>();
+            builder.Services.AddScoped<IKaffiDao, KaffiService>();
 
             var app = builder.Build();
 
