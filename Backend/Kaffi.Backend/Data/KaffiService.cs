@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kaffi.Backend.Data.Context;
 
-public class KaffiPgSql : IKaffiDao
+public class KaffiService : IKaffiDao
 {
     private readonly KaffiContext _context;
 
-    public KaffiPgSql(KaffiContext context)
+    public KaffiService(KaffiContext context)
     {
         _context = context;
     }
@@ -62,7 +62,7 @@ public class KaffiPgSql : IKaffiDao
         return coffee;
     }
 
-    // Lag en ny funksjon GetTodaysCoffee etc
+    
     public async Task<List<ShowCoffeeResponse>> GetCoffeeBasedOnFlavourSelected(List<int> listOfFlavourIds)
     {
         var coffee = await _context.Coffee.
@@ -78,4 +78,28 @@ public class KaffiPgSql : IKaffiDao
                                            }).ToListAsync();
         return coffee;
     }
+
+    // Lag en ny funksjon GetTodaysCoffee etc
+    public async Task<ShowCoffeeResponse?> GetRecCoffee(List<int> listOfFlavourIds)
+    {
+        var recCoffee = await _context.Coffee.
+                                            Where(c => c.CoffeeFlavours.
+                                            Count(x => listOfFlavourIds.Contains(x.FlavourId)) >= 2).
+                                            Select( c => new ShowCoffeeResponse
+                                            {
+                                                CoffeeName = c.Name,
+                                                CountryName = c.Country.Name,
+                                                ContinentName = c.Country.Continent.Name,
+                                                Variety = c.Variety.Name,
+                                                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
+                                                MatchCount = c.CoffeeFlavours.Count(cf => listOfFlavourIds.Contains(cf.FlavourId))
+                                            })
+                                            .OrderByDescending( d => d.MatchCount)
+                                            .ToListAsync();
+        var random = new Random();
+        var randomRec = random.Next(0, recCoffee.Count);
+        return recCoffee[randomRec];
+
+    }
+
 }

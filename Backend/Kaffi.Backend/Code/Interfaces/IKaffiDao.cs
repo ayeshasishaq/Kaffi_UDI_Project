@@ -12,4 +12,6 @@ public interface IKaffiDao
     Task<bool> DeleteCoffeeByIdAsync(int id);
     Task<List<ShowCoffeeResponse>> GetCoffeeBasedOnFlavourSelected(List<int> listOfFlavourIds);
 
+    Task<ShowCoffeeResponse> GetRecCoffee(List<int> listOffFlavourIds);
+
 }
