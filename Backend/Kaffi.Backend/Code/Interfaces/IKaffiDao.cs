@@ -17,5 +17,6 @@ public interface IKaffiDao
     Task<List<CountryDTO>> GetAllCountriesAsync();
     Task<List<FlavourDTO>> GetAllFlavoursAsync();
     Task <List<VarietyDTO>> GetAllVarietiesAsync();
+    Task <List<ShowCoffeeResponse>> GetAllCoffees();
 
 }
