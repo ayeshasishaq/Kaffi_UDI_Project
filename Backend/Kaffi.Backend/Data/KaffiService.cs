@@ -102,4 +102,29 @@ public class KaffiService : IKaffiDao
 
     }
 
+        public async Task<List<CountryDTO>> GetAllCountriesAsync()
+    {
+        return await _context.Country
+            .OrderBy(c => c.Name)
+            .Select(c => new CountryDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Continent = c.Continent.Name
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<FlavourDTO>> GetAllFlavoursAsync()
+    {
+        return await _context.Flavour
+            .OrderBy(f => f.Name)
+            .Select(f => new FlavourDTO
+            {
+                Id = f.Id,
+                Name = f.Name
+            })
+            .ToListAsync();
+    }
+
 }

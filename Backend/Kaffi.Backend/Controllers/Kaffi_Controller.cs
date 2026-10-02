@@ -81,5 +81,19 @@ namespace Kaffi.Backend.Controllers
             var coffee = await _kaffiDao.GetRecCoffee(ids);
             return Ok(coffee);
         }
+
+        [HttpGet]
+        [Route("countries")]
+        public async Task<IActionResult> GetCountries()
+        {
+            return Ok(await _kaffiDao.GetAllCountriesAsync());
+        }
+
+        [HttpGet]
+        [Route("flavours")]
+        public async Task<IActionResult> GetFlavours()
+        {
+            return Ok(await _kaffiDao.GetAllFlavoursAsync());
+        }
     }
 }
