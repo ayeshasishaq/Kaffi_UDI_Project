@@ -110,6 +110,7 @@ public class KaffiService : IKaffiDao
             {
                 Id = c.Id,
                 Name = c.Name,
+                ContinentId = c.Continent.Id,
                 Continent = c.Continent.Name
             })
             .ToListAsync();
@@ -125,6 +126,20 @@ public class KaffiService : IKaffiDao
                 Name = f.Name
             })
             .ToListAsync();
+    }
+
+    public async Task<List<VarietyDTO>> GetAllVarietiesAsync()
+    {
+        return await _context.Variety
+            .OrderBy(v => v.Name)
+            .Select(v => new VarietyDTO
+            {
+                Id = v.Id,
+                Name = v.Name
+            })
+            .ToListAsync();
+        
+        
     }
 
 }

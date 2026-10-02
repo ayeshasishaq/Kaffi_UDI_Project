@@ -3,12 +3,13 @@ import  DropDown  from "../Components/DropDown/DropDown";
 import { Btn } from "../Components/Btn/btn";
 import { MoveLeft } from "lucide-react"
 import '../Style/AdminViewStyle.css'
-import { useState, useCallback } from "react";
-import { flavours, countries, varieties} from "../Data/TestData";
+import { useState, useCallback, useEffect } from "react";
+import { flavours, varieties} from "../Data/TestData";
 import type { Country } from '../Types/Coutry';
 import type { NewCoffee } from "../Types/NewCoffee";
 import type { Variety } from "../Types/Variety";
 import { Toast, type ToastType } from "../Components/Toast/Toast";
+import { FetchCountries } from "../Api/apiKaffi";
 
 
 export function AdminView () {
@@ -19,7 +20,9 @@ export function AdminView () {
     const [selectedVariety, setSelectedVariety] = useState<Variety | null>(null);
     const [toast, setToast] = useState<ToastData | null>(null);
     const [toastVisible, setToastVisible] = useState(false);
+    const [countries, setCountries] = useState<Country[]>([]);
     const closeToast = useCallback(() => setToastVisible(false), []);
+    
 
 
 
@@ -42,6 +45,11 @@ export function AdminView () {
         setSelected((prev) =>
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
+    }
+
+    const getCountries = async () => {
+        const result =  await FetchCountries();
+        setCountries(result);
     }
 
     
@@ -68,7 +76,7 @@ export function AdminView () {
     message: "Kaffe lagt til",
     details: {
         Navn: newCoffee.name,
-        Land: `${selectedCountry.name}, ${selectedCountry.continent.name}`,
+        Land: `${selectedCountry.name}, ${selectedCountry.continent}`,
         Variant: selectedVariety.name,
         Smaker: flavours
                 .filter((f) => selected.includes(f.id))
@@ -83,6 +91,11 @@ export function AdminView () {
     setSelectedVariety(null);
     setSelected([]);
 }
+
+    useEffect(() => {
+        getCountries();
+        
+    }, []);
 
     return(
         <>
@@ -120,7 +133,7 @@ export function AdminView () {
                         selected={selectedCountry}
                         placeholder="Velg land"
                         onSelect={setSelectedCountry} 
-                        getLabel={(c) => `${c.name}, ${c.continent.name}` }
+                        getLabel={(c) => `${c.name}, ${c.continent}` }
                         />
                     </div>
                     

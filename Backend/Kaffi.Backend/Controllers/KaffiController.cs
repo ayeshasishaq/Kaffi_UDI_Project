@@ -95,5 +95,12 @@ namespace Kaffi.Backend.Controllers
         {
             return Ok(await _kaffiDao.GetAllFlavoursAsync());
         }
+
+        [HttpGet]
+        [Route("varieties")]
+        public async Task<IActionResult> GetVarieties()
+        {
+            return Ok(await _kaffiDao.GetAllVarietiesAsync());
+        }
     }
 }
