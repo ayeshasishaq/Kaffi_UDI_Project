@@ -128,4 +128,18 @@ public class KaffiService : IKaffiDao
             .ToListAsync();
     }
 
+    public async Task<List<VarietyDTO>> GetAllVarietiesAsync()
+    {
+        return await _context.Variety
+            .OrderBy(v => v.Name)
+            .Select(v => new VarietyDTO
+            {
+                Id = v.Id,
+                Name = v.Name
+            })
+            .ToListAsync();
+        
+        
+    }
+
 }
