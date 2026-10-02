@@ -1,15 +1,15 @@
-import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
+import '../Style/AdminViewStyle.css'
 import  DropDown  from "../Components/DropDown/DropDown";
+import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
 import { Btn } from "../Components/Btn/btn";
 import { MoveLeft } from "lucide-react"
-import '../Style/AdminViewStyle.css'
-import { useState, useCallback, useEffect } from "react";
-import { flavours } from "../Data/TestData";
+import { useState, useCallback, useEffect } from "react"
+import { Toast, type ToastType } from "../Components/Toast/Toast";
+import { FetchCountries, FetchFlavours, FetchVarities, PostNewCoffee } from "../Api/apiKaffi";
+import type { Flavour } from "../Types/Flavour";
 import type { Country } from '../Types/Coutry';
 import type { NewCoffee } from "../Types/NewCoffee";
 import type { Variety } from "../Types/Variety";
-import { Toast, type ToastType } from "../Components/Toast/Toast";
-import { FetchCountries, FetchVarities, PostNewCoffee } from "../Api/apiKaffi";
 
 
 export function AdminView () {
@@ -22,6 +22,7 @@ export function AdminView () {
     const [toastVisible, setToastVisible] = useState(false);
     const [countries, setCountries] = useState<Country[]>([]);
     const [varieties, setVarieties] = useState<Variety[]>([]);
+    const [flavours, setFlavours] = useState<Flavour[]>([]);
     const [saving, setSaving] = useState(false);
     const closeToast = useCallback(() => setToastVisible(false), []);
     
@@ -56,6 +57,11 @@ export function AdminView () {
         const result = await FetchVarities();
         setVarieties(result);
         
+    }
+
+    const getFlavours = async () => {
+        const result = await FetchFlavours();
+        setFlavours(result);
     }
 
    function handleAddCoffee() {
@@ -109,7 +115,8 @@ export function AdminView () {
 
     useEffect(() => {
         getCountries();
-        getVarieties();      
+        getVarieties();    
+        getFlavours();  
     }, []);
 
     return(

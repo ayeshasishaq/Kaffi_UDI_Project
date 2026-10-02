@@ -2,6 +2,7 @@ import type { Coffee } from "../Types/Coffee";
 import type { Country } from "../Types/Coutry";
 import type { Variety } from "../Types/Variety";
 import type { NewCoffee } from "../Types/NewCoffee";
+import type { Flavour } from "../Types/Flavour";
 
 
 const BASE_URL = "http://localhost:5054"; // Bytt ut med environent variable
@@ -66,6 +67,19 @@ export async function FetchVarities() {
   }
 
   return data as Variety[];
+}
+
+export async function FetchFlavours() {
+
+  const response = await fetch(`${BASE_URL}/Kaffi/flavours`);
+  const data = await response.json();
+  console.log("Smakstoner fra api: ", data);
+
+  if (!response.ok) {
+    throw new Error(`Fetch responded with code: ${response.status}`);
+  }
+
+  return data as Flavour[];
 }
 
 export async function PostNewCoffee(newCoffee: NewCoffee) {
