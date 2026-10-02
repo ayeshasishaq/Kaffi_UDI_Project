@@ -15,7 +15,7 @@ namespace Kaffi.Backend
                 options.AddPolicy("AllowMyFrontend",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:53789") // Replace with your exact frontend URL
+                        policy.WithOrigins("http://localhost:53789")
                               .AllowAnyHeader()
                               .AllowAnyMethod()
                               .AllowCredentials(); // Include this if you are using cookies/sessions
