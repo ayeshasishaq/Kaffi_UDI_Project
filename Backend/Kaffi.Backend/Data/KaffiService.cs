@@ -80,6 +80,7 @@ public class KaffiService : IKaffiDao
     }
 
     // Lag en ny funksjon GetTodaysCoffee etc
+    // Lag en ny funksjon GetTodaysCoffee etc
     public async Task<ShowCoffeeResponse?> GetRecCoffee(List<int> listOfFlavourIds)
     {
         var recCoffee = await _context.Coffee.
@@ -96,10 +97,12 @@ public class KaffiService : IKaffiDao
                                             })
                                             .OrderByDescending( d => d.MatchCount)
                                             .ToListAsync();
+
+        if (recCoffee.Count == 0) return null;  
+
         var random = new Random();
         var randomRec = random.Next(0, recCoffee.Count);
         return recCoffee[randomRec];
-
     }
 
         public async Task<List<CountryDTO>> GetAllCountriesAsync()
