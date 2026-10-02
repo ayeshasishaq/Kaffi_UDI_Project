@@ -110,6 +110,7 @@ public class KaffiService : IKaffiDao
             {
                 Id = c.Id,
                 Name = c.Name,
+                ContinentId = c.Continent.Id,
                 Continent = c.Continent.Name
             })
             .ToListAsync();
