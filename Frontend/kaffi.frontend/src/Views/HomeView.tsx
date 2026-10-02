@@ -13,7 +13,6 @@ export function HomeView() {
     const [noMatch, setNoMatch] = useState(false);
     const [flavours, setFlavours] = useState<Flavour[]>([]);
     const navigate = useNavigate();
-    const [coffee, setCoffee] = useState();
 
 
     function toggleFlavour(id: number) {

@@ -5,26 +5,32 @@ import { Btn } from "../Components/Btn/btn";
 import { MoveLeft } from "lucide-react"
 import { useState, useCallback, useEffect } from "react"
 import { Toast, type ToastType } from "../Components/Toast/Toast";
-import { FetchCountries, FetchFlavours, FetchVarities, PostNewCoffee } from "../Api/apiKaffi";
+import { FetchCountries, FetchFlavours, FetchVarities, FetchAllCoffees ,PostNewCoffee } from "../Api/apiKaffi";
 import type { Flavour } from "../Types/Flavour";
 import type { Country } from '../Types/Coutry';
+import type { Coffee } from '../Types/Coffee';
 import type { NewCoffee } from "../Types/NewCoffee";
 import type { Variety } from "../Types/Variety";
 
 
 export function AdminView () {
+    const [toast, setToast] = useState<ToastData | null>(null);
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+    const [selectedVariety, setSelectedVariety] = useState<Variety | null>(null);
+    const [selectedCoffee, setSelectedCoffee] = useState<Coffee | null>(null);
+    const [varieties, setVarieties] = useState<Variety[]>([]);
+    const [countries, setCountries] = useState<Country[]>([]);
+    const [flavours, setFlavours] = useState<Flavour[]>([]);
+    const [coffees, setCoffees] = useState<Coffee[]>([]);
     const [coffeeName, setCoffeeName] = useState("");
     const [error, setError] = useState("");
-    const [selectedVariety, setSelectedVariety] = useState<Variety | null>(null);
-    const [toast, setToast] = useState<ToastData | null>(null);
     const [toastVisible, setToastVisible] = useState(false);
-    const [countries, setCountries] = useState<Country[]>([]);
-    const [varieties, setVarieties] = useState<Variety[]>([]);
-    const [flavours, setFlavours] = useState<Flavour[]>([]);
-    const [saving, setSaving] = useState(false);
+    const [saving, setSaving] = useState(false);;
+    const [mode, setMode] = useState<Mode>("add");
     const closeToast = useCallback(() => setToastVisible(false), []);
+
+    type Mode = "add" | "edit" | "delete";
     
 
     type ToastData = {
@@ -33,13 +39,10 @@ export function AdminView () {
         details?: Record<string, string>;
     };
 
-
-
     function showToast(data: ToastData) {
         setToast(data);
         setToastVisible(true);
     }
-
 
     function toggleFlavour(id: number) {
         //setNoMatch(false);
@@ -64,7 +67,12 @@ export function AdminView () {
         setFlavours(result);
     }
 
-   function handleAddCoffee() {
+    const getAllCoffees = async () => {
+        const result = await FetchAllCoffees();
+        setCoffees(result);
+    }
+
+   async function  handleAddCoffee() {
     if (!coffeeName.trim() || !selectedCountry || !selectedVariety || selected.length === 0) {
         showToast({ type: "error", message: "Fyll ut navn, land, variant og minst én smak." });
         console.log(error)
@@ -80,7 +88,7 @@ export function AdminView () {
 
     setSaving(true);
     try {
-        PostNewCoffee(newCoffee);
+        await PostNewCoffee(newCoffee);
 
         showToast({
         type: "info",
@@ -116,85 +124,111 @@ export function AdminView () {
     useEffect(() => {
         getCountries();
         getVarieties();    
-        getFlavours();  
+        getFlavours();
+        getAllCoffees();  
     }, []);
 
     return(
         <>
-                <section className="content">
-                    <div className="nvgt-container">
-                        <NavigationLink to="/">
-                            <MoveLeft />
-                            Tilbake
-                        </NavigationLink>
-                    </div>
-                    <div className="header-container">
-                        <p className="logo-txt">Kaffi</p>
-                        <h1 className="admin-header">Admin</h1>
-                    </div>
-                    <div className="text-container">
-                        <p>Her kan du legge til nye kaffer! Fyll ut informasjon om kaffen, hvor den kommer fra og hvilke smaker den har.</p>
-                        <div className="dropdown-container">
-                            
+            <section className="content">
+                <div className="nvgt-container">
+                    <NavigationLink to="/">
+                        <MoveLeft />
+                        Tilbake
+                    </NavigationLink>
+                </div>
+                <div className="header-container">
+                    <p className="logo-txt">Kaffi</p>
+                    <h1 className="admin-header">Admin</h1>
+                </div>
+                <div>
+                    <Btn onClick={ () => setMode("add")}> Legg til </Btn>
+                    <Btn onClick={ () => setMode("edit")}> Endre </Btn>
+                    <Btn onClick={ () => setMode("delete")}> Slett</Btn>
+                </div>
+                { mode === "add" && (
+                    <>
+                        <div className="text-container">
+                            <p>Her kan du legge til nye kaffer! Fyll ut informasjon om kaffen, hvor den kommer fra og hvilke smaker den har.</p>
                         </div>
-                    </div>
-                    <form className="form-container">
-                    <label className="input-container">
-                    <p className="label-txt">Navn på kaffe:</p>
-                    <input
-                    className="input-txt"
-                    type="text" 
-                    value={coffeeName}
-                    onChange={(e) => setCoffeeName(e.target.value)}
-                    />
-                    </label>
-                    <div className="input-container">
-                        <p className="label-txt">Land:</p>
-                        <DropDown 
-                        items={countries} 
-                        selected={selectedCountry}
-                        placeholder="Velg land"
-                        onSelect={setSelectedCountry} 
-                        getLabel={(c) => `${c.name}, ${c.continent}` }
-                        />
-                    </div>
-                    
-                    <div className="input-container">
-                        <p className="label-txt">Bønnetype:</p>
-                        <DropDown 
-                        items={varieties} 
-                        selected={selectedVariety}
-                        placeholder="Velg bønnetype"
-                        onSelect={setSelectedVariety} 
-                        />
-                    </div>
-                    
-                    <div className="flavour-grid">
-                        {flavours.map((flavour) => (
-                            <label className="flavour" key={flavour.id}>
-                            <input
-                                type="checkbox"
-                                checked={selected.includes(flavour.id)}
-                                onChange={() => toggleFlavour(flavour.id)}
-                            />
-                            <p>{flavour.name}</p>
+                         <form className="form-container">
+                            <label className="input-container">
+                                <p className="label-txt">Navn på kaffe:</p>
+                                <input
+                                    className="input-txt"
+                                    type="text" 
+                                    value={coffeeName}
+                                    onChange={(e) => setCoffeeName(e.target.value)}
+                                />
                             </label>
-                        ))}
-                    </div>
-                    </form>
-                     <Btn onClick={handleAddCoffee}>
-                        {saving ? "Lagrer..." : "Legg til kaffe i databasen"}
-                     </Btn>
-                     {toast && (
-                        <Toast
-                            type={toast.type}
-                            message={toast.message}
-                            details={toast.details}
-                            visible={toastVisible}
-                            onClose={closeToast}
-                        />
-                    )}
-                </section>
+                            <div className="input-container">
+                                <p className="label-txt">Land:</p>
+                                <DropDown 
+                                items={countries} 
+                                selected={selectedCountry}
+                                placeholder="Velg land"
+                                onSelect={setSelectedCountry} 
+                                getLabel={(c) => `${c.name}, ${c.continent}` }
+                                />
+                            </div>
+                            
+                            <div className="input-container">
+                                <p className="label-txt">Bønnetype:</p>
+                                <DropDown 
+                                items={varieties} 
+                                selected={selectedVariety}
+                                placeholder="Velg bønnetype"
+                                onSelect={setSelectedVariety} 
+                                getLabel={(v) => v.name}
+                                />
+                            </div>
+                            
+                            <div className="flavour-grid">
+                                {flavours.map((flavour) => (
+                                    <label className="flavour" key={flavour.id}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selected.includes(flavour.id)}
+                                        onChange={() => toggleFlavour(flavour.id)}
+                                    />
+                                    <p>{flavour.name}</p>
+                                    </label>
+                                ))}
+                            </div>
+                        </form>
+                        <Btn onClick={handleAddCoffee}>
+                            {saving ? "Lagrer..." : "Legg til kaffe i databasen"}
+                        </Btn>
+                    </>
+                )}
+                { mode === "edit" && (
+                    <p>Her kommer skjema for å redigere en kaffe</p>
+                )}
+                { mode === "delete" && (
+                <>
+                    <p>Her kommer skjema for å slette en kaffe</p>
+                    <div className="input-container">
+                        <p className="label-txt">Alle kaffer i databasen:</p>
+                        <DropDown 
+                            items={coffees} 
+                            selected={selectedCoffee}
+                            placeholder="Velg kaffe"
+                            onSelect={setSelectedCoffee}
+                            getLabel={(c) => `${c.coffeeName}, ${c.continentName}` }
+                        />        
+                    </div>   
+                </>
+                )}
+                {toast && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    details={toast.details}
+                    visible={toastVisible}
+                    onClose={closeToast}
+                />
+            )}
+            </section>       
         </>
     )
 }

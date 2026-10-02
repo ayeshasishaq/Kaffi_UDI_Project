@@ -82,6 +82,18 @@ export async function FetchFlavours() {
   return data as Flavour[];
 }
 
+export async function FetchAllCoffees() {
+
+  const response = await fetch(`${BASE_URL}/Kaffi/all`);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`Fetch responded with code: ${response.status}`);
+  }
+
+  return data as Coffee[];
+}
+
 export async function PostNewCoffee(newCoffee: NewCoffee) {
   try {
         const response = await fetch(`${BASE_URL}/Kaffi`,{
