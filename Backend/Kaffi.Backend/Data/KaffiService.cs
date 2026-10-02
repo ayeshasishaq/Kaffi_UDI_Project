@@ -137,9 +137,22 @@ public class KaffiService : IKaffiDao
                 Id = v.Id,
                 Name = v.Name
             })
+            .ToListAsync();  
+    }
+
+    public async Task<List<ShowCoffeeResponse>> GetAllCoffees()
+    {
+        return await _context.Coffee
+            .Select( c => new ShowCoffeeResponse
+            {
+                CoffeeName = c.Name,
+                CountryName = c.Country.Name,
+                ContinentName = c.Country.Continent.Name,
+                Variety = c.Variety.Name,
+                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
+
+            })
             .ToListAsync();
-        
-        
     }
 
 }
