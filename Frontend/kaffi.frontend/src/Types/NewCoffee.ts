@@ -1,6 +1,6 @@
 export type NewCoffee = {
-    name: string;
-    countryId: number;
-    varietyId: number;
-    flavourIds: number[];
+    Name: string;
+    CountryId: number;
+    VarietyId: number;
+    FlavourIds: number[];
 }
