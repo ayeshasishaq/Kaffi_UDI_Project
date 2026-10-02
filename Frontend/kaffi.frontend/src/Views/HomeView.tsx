@@ -1,16 +1,17 @@
+import Logo from "../assets/Logo.png"
+import "../Style/HomeViewStyle.css"
 import { Btn } from "../Components/Btn/btn"
 import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
 import { Lock } from 'lucide-react'
-import Logo from "../assets/Logo.png"
-import "../Style/HomeViewStyle.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { flavours, coffees, findMatchingCoffee } from "../Data/TestData";
-import { fetchData } from "../Api/apiKaffi";;
+import { FetchFlavours } from "../Api/apiKaffi"
+import type { Flavour } from "../Types/Flavour"
 
 export function HomeView() {
     const [selected, setSelected] = useState<number[]>([]);
     const [noMatch, setNoMatch] = useState(false);
+    const [flavours, setFlavours] = useState<Flavour[]>([]);
     const navigate = useNavigate();
     const [coffee, setCoffee] = useState();
 
@@ -30,12 +31,20 @@ export function HomeView() {
     //         setNoMatch(true);
     //     }
     // }
+    const getFlavours = async () => {
+        const result = await FetchFlavours();
+        setFlavours(result);
+    }
 
     function handleSearch(selectedFlavourIds: number[]) {
         const params = new URLSearchParams();
         selectedFlavourIds.forEach((id) => params.append("ids", id.toString()));
         navigate(`/rec?${params}`);
     }
+
+    useEffect(() => {
+        getFlavours();  
+    }, []);
 
     return (
         <>
