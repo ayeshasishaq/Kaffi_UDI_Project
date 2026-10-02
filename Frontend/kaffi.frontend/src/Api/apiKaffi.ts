@@ -18,43 +18,38 @@ export async function fetchData() {
     const data = await response.json();
     console.log(data)
     return data
-    console.log(data.message);
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 }
 
-export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal) {
+export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal): Promise<Coffee | undefined> {
 
   const params = new URLSearchParams();
   flavourIds.forEach((id) => params.append("ids", id.toString()))
 
   const response = await fetch(`${BASE_URL}/Kaffi/first-match?${params}`, { signal })
-  const data = await response.json();
-  console.log("fra api: ", data, Array.isArray(data));
+
+  if (response.status === 204) return undefined; // ingen kaffe matchet
 
   if (!response.ok) {
     throw new Error(`Fetch responded with code: ${response.status}`)
   }
 
+  const data = await response.json();
+  console.log("fra api: ", data);
   return data as Coffee;
 }
 
 export async function FetchCountries() {
 
   const response = await fetch(`${BASE_URL}/Kaffi/countries`);
-  const data = await response.json();
-  console.log("fra api: ", data);
 
   if (!response.ok) {
     throw new Error(`Fetch responded with code: ${response.status}`);
   }
 
+  const data = await response.json();
+  console.log("fra api: ", data);
   return data as Country[];
 }
-
-
-
-
-
-

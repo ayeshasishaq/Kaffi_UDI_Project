@@ -40,12 +40,13 @@ export function AdminView () {
     }
 
 
-    function toggleFlavour(id: number) {
-        //setNoMatch(false);
-        setSelected((prev) =>
-            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        );
-    }
+   function toggleFlavour(id: number) {
+       setSelected((prev) => {
+           if (prev.includes(id)) return prev.filter((x) => x !== id);
+           if (prev.length >= 3) return prev;
+           return [...prev, id];
+       });
+   }
 
     const getCountries = async () => {
         const result =  await FetchCountries();
@@ -53,13 +54,13 @@ export function AdminView () {
     }
 
     
-   function handleAddCoffee() {
-    if (!coffeeName.trim() || !selectedCountry || !selectedVariety || selected.length === 0) {
-        setError("Fyll ut navn, land, variant og minst én smak.");
-        showToast({ type: "error", message: "Fyll ut navn, land, variant og minst én smak." });
-        console.log(error)
-        return;
-    }
+    function handleAddCoffee() {
+        if (!coffeeName.trim() || !selectedCountry || !selectedVariety || selected.length !== 3) {
+            setError("Fyll ut navn, land, variant og nøyaktig 3 smaker.");
+            showToast({ type: "error", message: "Fyll ut navn, land, variant og nøyaktig 3 smaker." });
+            return;
+        }
+
 
     const newCoffee: NewCoffee = {
         name: coffeeName.trim(),
@@ -153,6 +154,7 @@ export function AdminView () {
                             <input
                                 type="checkbox"
                                 checked={selected.includes(flavour.id)}
+                                disabled={!selected.includes(flavour.id) && selected.length >= 3}
                                 onChange={() => toggleFlavour(flavour.id)}
                             />
                             <p>{flavour.name}</p>

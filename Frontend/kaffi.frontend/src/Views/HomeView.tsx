@@ -17,9 +17,11 @@ export function HomeView() {
 
     function toggleFlavour(id: number) {
         setNoMatch(false);
-        setSelected((prev) =>
-            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        );
+        setSelected((prev) => {
+            if (prev.includes(id)) return prev.filter((x) => x !== id);
+            if (prev.length >= 3) return prev;
+            return [...prev, id];
+        });
     }
 
     // function handleRecommend() {
@@ -32,9 +34,13 @@ export function HomeView() {
     // }
 
     function handleSearch(selectedFlavourIds: number[]) {
-        const params = new URLSearchParams();
-        selectedFlavourIds.forEach((id) => params.append("ids", id.toString()));
-        navigate(`/rec?${params}`);
+    if (selectedFlavourIds.length < 2) {
+        setNoMatch(true);
+        return;
+    }
+    const params = new URLSearchParams();
+    selectedFlavourIds.forEach((id) => params.append("ids", id.toString()));
+    navigate(`/rec?${params}`);
     }
 
     return (
@@ -57,6 +63,7 @@ export function HomeView() {
                             <input
                                 type="checkbox"
                                 checked={selected.includes(flavour.id)}
+                                disabled={!selected.includes(flavour.id) && selected.length >= 3}
                                 onChange={() => toggleFlavour(flavour.id)}
                             />
                             <p>{flavour.name}</p>
