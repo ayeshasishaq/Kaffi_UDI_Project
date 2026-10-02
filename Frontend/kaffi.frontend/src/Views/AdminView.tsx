@@ -4,12 +4,12 @@ import { Btn } from "../Components/Btn/btn";
 import { MoveLeft } from "lucide-react"
 import '../Style/AdminViewStyle.css'
 import { useState, useCallback, useEffect } from "react";
-import { flavours, varieties} from "../Data/TestData";
+import { flavours } from "../Data/TestData";
 import type { Country } from '../Types/Coutry';
 import type { NewCoffee } from "../Types/NewCoffee";
 import type { Variety } from "../Types/Variety";
 import { Toast, type ToastType } from "../Components/Toast/Toast";
-import { FetchCountries } from "../Api/apiKaffi";
+import { FetchCountries, FetchVarities } from "../Api/apiKaffi";
 
 
 export function AdminView () {
@@ -21,6 +21,7 @@ export function AdminView () {
     const [toast, setToast] = useState<ToastData | null>(null);
     const [toastVisible, setToastVisible] = useState(false);
     const [countries, setCountries] = useState<Country[]>([]);
+    const [varieties, setVarieties] = useState<Variety[]>([]);
     const closeToast = useCallback(() => setToastVisible(false), []);
     
 
@@ -50,6 +51,12 @@ export function AdminView () {
     const getCountries = async () => {
         const result =  await FetchCountries();
         setCountries(result);
+    }
+
+    const getVarieties = async () => {
+        const result = await FetchVarities();
+        setVarieties(result);
+        
     }
 
     
@@ -94,7 +101,7 @@ export function AdminView () {
 
     useEffect(() => {
         getCountries();
-        
+        getVarieties();      
     }, []);
 
     return(

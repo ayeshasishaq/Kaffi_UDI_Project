@@ -1,5 +1,6 @@
 import type { Coffee } from "../Types/Coffee";
 import type { Country } from "../Types/Coutry";
+import type { Variety } from "../Types/Variety";
 
 
 const BASE_URL = "http://localhost:5054"; // Bytt ut med environent variable
@@ -51,6 +52,19 @@ export async function FetchCountries() {
   }
 
   return data as Country[];
+}
+
+export async function FetchVarities() {
+
+  const response = await fetch(`${BASE_URL}/Kaffi/varieties`);
+  const data = await response.json();
+  console.log("fra api: ", data);
+
+  if (!response.ok) {
+    throw new Error(`Fetch responded with code: ${response.status}`);
+  }
+
+  return data as Variety[];
 }
 
 
