@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Kaffi.Backend.Controllers
 {
     [ApiController]
-    [Route("[api/Controller]")]
+    [Route("[api/Kaffi]")]
     public class KaffiController : Controller
     {
         private IKaffiDao _kaffiDao;
