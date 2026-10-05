@@ -10,23 +10,26 @@ namespace Kaffi.Backend
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddCors(options  =>
+            builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowMyFrontend",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:53789") // Replace with your exact frontend URL
+                        policy.WithOrigins("http://localhost:53789")
                               .AllowAnyHeader()
                               .AllowAnyMethod()
-                              .AllowCredentials(); // Include this if you are using cookies/sessions
+                              // Kan brukes eller fjernes for auth eller cookies
+                              .AllowCredentials();
                     });
             });
 
+            // Denne gjør at vi fjerner reference cycles når vi bruker navigation properties
+            // Denne kan fjernes når vi kun returnerer DTO's istedenfor selve database objektet
             builder.Services.AddControllers()
             .AddJsonOptions(o =>
                 o.JsonSerializerOptions.ReferenceHandler =
                     System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
-                    
+
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<KaffiContext>(options =>

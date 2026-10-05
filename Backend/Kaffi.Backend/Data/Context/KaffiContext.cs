@@ -6,7 +6,6 @@ namespace Kaffi.Backend.Data.Context;
 public class KaffiContext : DbContext
 {
     public KaffiContext(DbContextOptions<KaffiContext> options) : base(options) { }
-
     public DbSet<Continent> Continent => Set<Continent>();
     public DbSet<Country> Country => Set<Country>();
     public DbSet<Flavour> Flavour => Set<Flavour>();
