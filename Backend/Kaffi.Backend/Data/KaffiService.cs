@@ -140,19 +140,34 @@ public class KaffiService : IKaffiDao
             .ToListAsync();  
     }
 
-    public async Task<List<ShowCoffeeResponse>> GetAllCoffees()
+    public async Task<List<CoffeeDto>> GetAllCoffees()
     {
         return await _context.Coffee
-            .Select( c => new ShowCoffeeResponse
+            .Select( c => new CoffeeDto
             {
-                CoffeeName = c.Name,
-                CountryName = c.Country.Name,
-                ContinentName = c.Country.Continent.Name,
-                Variety = c.Variety.Name,
-                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
+            Id = c.Id,
+            CoffeeName = c.Name,
+            CountryName = c.Country.Name,
+            ContinentName = c.Country.Continent.Name,
+            Variety = c.Variety.Name,
+            Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
 
             })
             .ToListAsync();
+    }
+
+    public async Task <bool> EditCoffeeNameByIdAsync(int id, string newName)
+    {
+        var coffee = await _context.Coffee.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (coffee == null)
+        {
+            return false;
+        }
+
+        coffee.Name = newName.Trim();
+        await _context.SaveChangesAsync();
+        return true;
     }
 
 }

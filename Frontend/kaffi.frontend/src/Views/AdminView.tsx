@@ -2,15 +2,16 @@ import '../Style/AdminViewStyle.css'
 import  DropDown  from "../Components/DropDown/DropDown";
 import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
 import { Btn } from "../Components/Btn/btn";
-import { MoveLeft } from "lucide-react"
+import { MoveLeft, Trash } from "lucide-react"
 import { useState, useCallback, useEffect } from "react"
 import { Toast, type ToastType } from "../Components/Toast/Toast";
-import { FetchCountries, FetchFlavours, FetchVarities, FetchAllCoffees ,PostNewCoffee } from "../Api/apiKaffi";
+import { FetchCountries, FetchFlavours, FetchVarities, FetchAllCoffees ,PostNewCoffee, DeleteCoffee, UpdateCoffeeName } from "../Api/apiKaffi";
 import type { Flavour } from "../Types/Flavour";
 import type { Country } from '../Types/Coutry';
 import type { Coffee } from '../Types/Coffee';
 import type { NewCoffee } from "../Types/NewCoffee";
 import type { Variety } from "../Types/Variety";
+import { IconBtn } from '../Components/IconBtn/IconBtn';
 
 
 export function AdminView () {
@@ -121,6 +122,78 @@ export function AdminView () {
 
 }
 
+   async function  handleDeleteCoffee(coffee: Coffee) {
+    if (!coffees.includes(coffee)) {
+        showToast({ type: "error", message: "Kunne ikke finne denne kaffen i databasen." });
+        console.log(error)
+        return;
+    }
+
+    console.log(coffee.id);
+
+    setSaving(true);
+    try {
+        await DeleteCoffee(coffee);
+
+        showToast({
+        type: "info",
+        message: "Kaffen ble slettet fra databasen",
+        details: {
+            Navn: coffee.coffeeName,
+            },
+        });
+    
+        setError("");
+        setCoffeeName("");
+        setSelectedCoffee(null);
+        setSelected([]);
+    } catch (err) {
+        showToast({
+            type: "error",
+            message: "Kunne ikke slette kaffen fra databasen"
+        });
+    } finally {
+        setSaving(false);
+        getAllCoffees();
+    }
+    
+
+}
+
+   async function  handleUpdateCoffeeName(id: number, newName: string) {
+    setSaving(true);
+    try {
+
+        const newNameObj = {
+            name: newName
+        }
+
+        await UpdateCoffeeName(id, newNameObj);
+
+        showToast({
+        type: "info",
+        message: "Navnet på kaffen ble endret i databasen",
+        details: {
+            Navn: newName,
+            },
+        });
+    
+        setError("");
+        setSelectedCoffee(null);
+        setSelected([]);
+    } catch (err) {
+        showToast({
+            type: "error",
+            message: "Kunne ikke endre navnet på kaffen i databasen"
+        });
+    } finally {
+        setSaving(false);
+        getAllCoffees();
+    }
+    
+
+}
+
     useEffect(() => {
         getCountries();
         getVarieties();    
@@ -141,7 +214,7 @@ export function AdminView () {
                     <p className="logo-txt">Kaffi</p>
                     <h1 className="admin-header">Admin</h1>
                 </div>
-                <div>
+                <div className='btn-container'>
                     <Btn onClick={ () => setMode("add")}> Legg til </Btn>
                     <Btn onClick={ () => setMode("edit")}> Endre </Btn>
                     <Btn onClick={ () => setMode("delete")}> Slett</Btn>
@@ -202,11 +275,54 @@ export function AdminView () {
                     </>
                 )}
                 { mode === "edit" && (
-                    <p>Her kommer skjema for å redigere en kaffe</p>
+                <>
+                    <p>Her kan du endre navn på en kaffe</p>
+                    <form className='form-container'>
+                        <div className="input-container">
+                            <p className="label-txt">Alle kaffer i databasen:</p>
+                            <DropDown 
+                                items={coffees} 
+                                selected={selectedCoffee}
+                                placeholder="Velg kaffe"
+                                onSelect={setSelectedCoffee}
+                                getLabel={(c) => `${c.coffeeName}, ${c.continentName}` }
+                            />        
+                        </div>
+                    </form>
+                    {selectedCoffee && (
+                    <>
+                        <div className="coffee-container">
+                            <p><strong>{selectedCoffee?.coffeeName}</strong></p>
+                            <div className="flavours-container">
+                                <p>Smakstoner: </p>
+                                {selectedCoffee?.flavours.map((flavour) => (
+                                    <p key={flavour}>{flavour}</p>
+                                ))}
+                            </div>
+                            <p>Bønnetype: {selectedCoffee?.variety}</p>
+                            <p>Opprinnelse: {selectedCoffee?.countryName}, {selectedCoffee?.continentName}</p>
+                        </div>
+                        <form>
+                            <label className="input-container">
+                                <p className="label-txt">Navn på kaffe:</p>
+                                <input
+                                    className="input-txt"
+                                    type="text" 
+                                    value={coffeeName}
+                                    onChange={(e) => setCoffeeName(e.target.value)}
+                                />
+                            </label>      
+                        </form>
+                        <Btn onClick={() => handleUpdateCoffeeName(selectedCoffee.id, coffeeName)}>
+                            {saving ? "Lagrer..." : "Lagre endring"}
+                        </Btn>
+                    </>
+                    )}
+                </>
                 )}
                 { mode === "delete" && (
                 <>
-                    <p>Her kommer skjema for å slette en kaffe</p>
+                    <p>Her kan du slette en kaffe fra databasen</p>
                     <div className="input-container">
                         <p className="label-txt">Alle kaffer i databasen:</p>
                         <DropDown 
@@ -216,7 +332,25 @@ export function AdminView () {
                             onSelect={setSelectedCoffee}
                             getLabel={(c) => `${c.coffeeName}, ${c.continentName}` }
                         />        
-                    </div>   
+                    </div>
+                    {selectedCoffee && (
+                        <div className="coffee-container">
+                            <div className="header-icon">
+                                <p><strong>{selectedCoffee?.coffeeName}</strong></p>
+                                <IconBtn onClick={() => handleDeleteCoffee(selectedCoffee)}>
+                                    <Trash/>
+                                </IconBtn>
+                            </div>
+                            <div className="flavours-container">
+                                <p>Smakstoner: </p>
+                                {selectedCoffee?.flavours.map((flavour) => (
+                                    <p key={flavour}>{flavour}</p>
+                                ))}
+                            </div>
+                            <p>Bønnetype: {selectedCoffee?.variety}</p>
+                            <p>Opprinnelse: {selectedCoffee?.countryName}, {selectedCoffee?.continentName}</p>
+                        </div>  
+                    )}
                 </>
                 )}
                 {toast && (

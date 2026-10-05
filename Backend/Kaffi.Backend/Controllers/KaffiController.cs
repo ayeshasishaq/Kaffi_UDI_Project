@@ -109,5 +109,18 @@ namespace Kaffi.Backend.Controllers
         {
             return Ok(await _kaffiDao.GetAllCoffees());
         }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateCoffeeName(int id, [FromBody] EditNameRequestDto request)
+        {
+            var updated = await _kaffiDao.EditCoffeeNameByIdAsync(id, request.Name);
+
+            if(!updated)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
