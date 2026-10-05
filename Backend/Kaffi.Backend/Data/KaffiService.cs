@@ -58,6 +58,7 @@ public class KaffiService : IKaffiDao
             throw;
         }
     }
+    
     public async Task<Coffee> CreateCoffeeAsync(CreateCoffeeRequestDto request)
     {
 
@@ -126,6 +127,7 @@ public class KaffiService : IKaffiDao
             throw;
         }
     }
+    
     public async Task<ShowCoffeeResponse> GetRecCoffee(List<int> listOfFlavourIds)
     {
         var recCoffee = await _context.Coffee.
@@ -156,6 +158,7 @@ public class KaffiService : IKaffiDao
             {
                 Id = c.Id,
                 Name = c.Name,
+                ContinentId = c.Continent.Id,
                 Continent = c.Continent.Name
             })
             .ToListAsync();
@@ -169,6 +172,33 @@ public class KaffiService : IKaffiDao
             {
                 Id = f.Id,
                 Name = f.Name
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<VarietyDTO>> GetAllVarietiesAsync()
+    {
+        return await _context.Variety
+            .OrderBy(v => v.Name)
+            .Select(v => new VarietyDTO
+            {
+                Id = v.Id,
+                Name = v.Name
+            })
+            .ToListAsync();  
+    }
+
+    public async Task<List<ShowCoffeeResponse>> GetAllCoffees()
+    {
+        return await _context.Coffee
+            .Select( c => new ShowCoffeeResponse
+            {
+                CoffeeName = c.Name,
+                CountryName = c.Country.Name,
+                ContinentName = c.Country.Continent.Name,
+                Variety = c.Variety.Name,
+                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
+
             })
             .ToListAsync();
     }

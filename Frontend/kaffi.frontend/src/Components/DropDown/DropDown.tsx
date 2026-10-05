@@ -3,24 +3,24 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import '../DropDown/DropDown.css';
 
 type Option = {
-    name: string;
+    //name: string;
     id: number;
 }
 
-type DropDownProps<T extends Option >= {
+type DropDownProps<T extends {id: number} >= {
     items: T[];
     selected: T | null;
     placeholder: string;
     onSelect: (item: T) => void;
-    getLabel?: (item: T) => string;
+    getLabel: (item: T) => string;
 };
 
-function DropDown<T extends Option> ({
+function DropDown<T extends {id: number}> ({
     items, 
     selected, 
     placeholder, 
     onSelect,
-    getLabel = (item) => item.name
+    getLabel,
 }: DropDownProps<T> ){
     return (
         <DropdownButton 
