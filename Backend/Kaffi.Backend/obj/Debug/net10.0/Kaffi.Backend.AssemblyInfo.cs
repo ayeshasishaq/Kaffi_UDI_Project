@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kaffi.Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58ead542cccafbcb1c00811f065b177ecd6870a8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+98edb4dfb72d464805b9ae30659ef33ada217950")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kaffi.Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kaffi.Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
