@@ -110,6 +110,12 @@ namespace Kaffi.Backend.Controllers
         public async Task<IActionResult> GetFirstCoffeeRecByFlavour([FromQuery] List<int> ids)
         {
             var coffee = await _kaffiDao.GetRecCoffee(ids);
+
+            if (coffee == null)
+            {
+                return NotFound();
+            }
+
             return Ok(coffee);
         }
 
@@ -146,7 +152,7 @@ namespace Kaffi.Backend.Controllers
         {
             var updated = await _kaffiDao.EditCoffeeNameByIdAsync(id, request.Name);
 
-            if(!updated)
+            if (!updated)
             {
                 return NotFound();
             }

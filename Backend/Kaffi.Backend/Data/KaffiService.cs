@@ -58,7 +58,7 @@ public class KaffiService : IKaffiDao
             throw;
         }
     }
-    
+
     public async Task<Coffee> CreateCoffeeAsync(CreateCoffeeRequestDto request)
     {
 
@@ -97,7 +97,7 @@ public class KaffiService : IKaffiDao
         }
     }
 
-    public async Task<List<ShowCoffeeResponse>> GetCoffeesBasedOnFlavour(List<int> listOfFlavourIds)
+    public async Task<ShowCoffeeResponse> GetRecCoffee(List<int> listOfFlavourIds)
     {
         if (listOfFlavourIds.Count < 3)
         {
@@ -107,18 +107,29 @@ public class KaffiService : IKaffiDao
 
         try
         {
-            var coffee = await _context.Coffee.
-                                               Where(c => c.CoffeeFlavours.
-                                               Any(x => listOfFlavourIds.Contains(x.FlavourId))).
-                                               Select(c => new ShowCoffeeResponse
-                                               {
-                                                   CoffeeName = c.Name,
-                                                   CountryName = c.Country.Name,
-                                                   ContinentName = c.Country.Continent.Name,
-                                                   Variety = c.Variety.Name,
-                                                   Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList()
-                                               }).ToListAsync();
-            return coffee;
+            var recCoffee = await _context.Coffee.
+                                                Where(c => c.CoffeeFlavours.
+                                                Count(x => listOfFlavourIds.Contains(x.FlavourId)) >= 2).
+                                                Select(c => new ShowCoffeeResponse
+                                                {
+                                                    CoffeeName = c.Name,
+                                                    CountryName = c.Country.Name,
+                                                    ContinentName = c.Country.Continent.Name,
+                                                    Variety = c.Variety.Name,
+                                                    Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
+                                                    MatchCount = c.CoffeeFlavours.Count(cf => listOfFlavourIds.Contains(cf.FlavourId))
+                                                })
+                                                .OrderByDescending(d => d.MatchCount)
+                                                .ToListAsync();
+
+            if (recCoffee.Count == 0)
+            {
+                return null;
+            }
+
+            var random = new Random();
+            var randomRec = random.Next(0, recCoffee.Count);
+            return recCoffee[randomRec];
         }
 
         catch (Exception ex)
@@ -126,28 +137,6 @@ public class KaffiService : IKaffiDao
             _logger.LogError(ex, "Error when trying to get coffee based on flavours");
             throw;
         }
-    }
-    
-    public async Task<ShowCoffeeResponse> GetRecCoffee(List<int> listOfFlavourIds)
-    {
-        var recCoffee = await _context.Coffee.
-                                            Where(c => c.CoffeeFlavours.
-                                            Count(x => listOfFlavourIds.Contains(x.FlavourId)) >= 2).
-                                            Select(c => new ShowCoffeeResponse
-                                            {
-                                                CoffeeName = c.Name,
-                                                CountryName = c.Country.Name,
-                                                ContinentName = c.Country.Continent.Name,
-                                                Variety = c.Variety.Name,
-                                                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
-                                                MatchCount = c.CoffeeFlavours.Count(cf => listOfFlavourIds.Contains(cf.FlavourId))
-                                            })
-                                            .OrderByDescending(d => d.MatchCount)
-                                            .ToListAsync();
-
-        var random = new Random();
-        var randomRec = random.Next(0, recCoffee.Count);
-        return recCoffee[randomRec];
     }
 
     public async Task<List<CountryDTO>> GetAllCountriesAsync()
@@ -185,26 +174,26 @@ public class KaffiService : IKaffiDao
                 Id = v.Id,
                 Name = v.Name
             })
-            .ToListAsync();  
+            .ToListAsync();
     }
 
     public async Task<List<CoffeeDto>> GetAllCoffees()
     {
         return await _context.Coffee
-            .Select( c => new CoffeeDto
+            .Select(c => new CoffeeDto
             {
-            Id = c.Id,
-            CoffeeName = c.Name,
-            CountryName = c.Country.Name,
-            ContinentName = c.Country.Continent.Name,
-            Variety = c.Variety.Name,
-            Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
+                Id = c.Id,
+                CoffeeName = c.Name,
+                CountryName = c.Country.Name,
+                ContinentName = c.Country.Continent.Name,
+                Variety = c.Variety.Name,
+                Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList(),
 
             })
             .ToListAsync();
     }
 
-    public async Task <bool> EditCoffeeNameByIdAsync(int id, string newName)
+    public async Task<bool> EditCoffeeNameByIdAsync(int id, string newName)
     {
         var coffee = await _context.Coffee.FirstOrDefaultAsync(c => c.Id == id);
 
@@ -216,5 +205,36 @@ public class KaffiService : IKaffiDao
         coffee.Name = newName.Trim();
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<List<ShowCoffeeResponse>> GetCoffeesBasedOnFlavour(List<int> listOfFlavourIds)
+    {
+        if (listOfFlavourIds.Count < 3)
+        {
+            _logger.LogWarning("Flavourlist cannot contain less than 3 positive numbers {listOfFlavourIds}", listOfFlavourIds);
+            throw new ArgumentException("A coffee must have atleast 3 flavours", nameof(listOfFlavourIds));
+        }
+
+        try
+        {
+            var coffee = await _context.Coffee.
+                                               Where(c => c.CoffeeFlavours.
+                                               Any(x => listOfFlavourIds.Contains(x.FlavourId))).
+                                               Select(c => new ShowCoffeeResponse
+                                               {
+                                                   CoffeeName = c.Name,
+                                                   CountryName = c.Country.Name,
+                                                   ContinentName = c.Country.Continent.Name,
+                                                   Variety = c.Variety.Name,
+                                                   Flavours = c.CoffeeFlavours.Select(cf => cf.Flavour.Name).ToList()
+                                               }).ToListAsync();
+            return coffee;
+        }
+
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error when trying to get coffee based on flavours");
+            throw;
+        }
     }
 }

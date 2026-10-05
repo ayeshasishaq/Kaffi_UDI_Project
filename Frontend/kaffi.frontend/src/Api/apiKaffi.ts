@@ -5,7 +5,7 @@ import type { NewCoffee } from "../Types/NewCoffee";
 import type { Flavour } from "../Types/Flavour";
 
 
-const BASE_URL = "http://localhost:5054"; // Bytt ut med environent variable
+const BASE_URL = "http://localhost:5054/api"; // Bytt ut med environent variable
 
 export async function fetchData() {
   try {
@@ -32,12 +32,11 @@ export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal) 
   const params = new URLSearchParams();
   flavourIds.forEach((id) => params.append("ids", id.toString()))
 
-  const response = await fetch(`${BASE_URL}/Kaffi/first-match?${params}`, { signal })
+  const response = await fetch(`${BASE_URL}/Kaffi/recommendations?${params}`, { signal })
   const data = await response.json();
-  console.log("Kaffe fra api: ", data, Array.isArray(data));
 
   if (!response.ok) {
-    throw new Error(`Fetch responded with code: ${response.status}`)
+    throw new Error(`Det finnes ingen kaffe som passer dine smaksløker`)
   }
 
   return data as Coffee;
@@ -96,53 +95,53 @@ export async function FetchAllCoffees() {
 
 export async function PostNewCoffee(newCoffee: NewCoffee) {
   try {
-        const response = await fetch(`${BASE_URL}/Kaffi`,{
+    const response = await fetch(`${BASE_URL}/Kaffi`, {
       method: "POST",
-      headers: { "Content-Type" : "application/json", },
+      headers: { "Content-Type": "application/json", },
       body: JSON.stringify(newCoffee),
     });
     console.log(newCoffee);
 
     if (!response.ok) {
       throw new Error(`Post responded with code: ${response.status}`);
-      
+
     }
 
     return response.json();
-    
+
   } catch (error) {
     console.error('Error adding data:', error);
   }
 }
 
 export async function DeleteCoffee(coffee: Coffee) {
-        const response = await fetch(`${BASE_URL}/Kaffi/${coffee.id}`,{
-      method: "DELETE",
-      // headers: {
-      //   "Content-Type" : "application/json",
-      // },
-      // body: JSON.stringify(coffee),
-    });
-    console.log(coffee);
+  const response = await fetch(`${BASE_URL}/Kaffi/${coffee.id}`, {
+    method: "DELETE",
+    // headers: {
+    //   "Content-Type" : "application/json",
+    // },
+    // body: JSON.stringify(coffee),
+  });
+  console.log(coffee);
 
-    if (!response.ok) {
-      throw new Error(`Post responded with code: ${response.status}`);
-      
-    }
+  if (!response.ok) {
+    throw new Error(`Post responded with code: ${response.status}`);
+
+  }
 }
 
-export async function UpdateCoffeeName(id: number, newName: object): Promise<void>{
+export async function UpdateCoffeeName(id: number, newName: object): Promise<void> {
   const response = await fetch(`${BASE_URL}/Kaffi/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type" : "application/json" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newName),
 
   });
 
   if (!response.ok) {
-      throw new Error(`Post responded with code: ${response.status}`);
-      
-    }
+    throw new Error(`Post responded with code: ${response.status}`);
+
+  }
 }
 
 
