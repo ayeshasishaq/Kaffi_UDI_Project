@@ -98,9 +98,7 @@ export async function PostNewCoffee(newCoffee: NewCoffee) {
   try {
         const response = await fetch(`${BASE_URL}/Kaffi`,{
       method: "POST",
-      headers: {
-        "Content-Type" : "application/json",
-      },
+      headers: { "Content-Type" : "application/json", },
       body: JSON.stringify(newCoffee),
     });
     console.log(newCoffee);
@@ -115,6 +113,36 @@ export async function PostNewCoffee(newCoffee: NewCoffee) {
   } catch (error) {
     console.error('Error adding data:', error);
   }
+}
+
+export async function DeleteCoffee(coffee: Coffee) {
+        const response = await fetch(`${BASE_URL}/Kaffi/${coffee.id}`,{
+      method: "DELETE",
+      // headers: {
+      //   "Content-Type" : "application/json",
+      // },
+      // body: JSON.stringify(coffee),
+    });
+    console.log(coffee);
+
+    if (!response.ok) {
+      throw new Error(`Post responded with code: ${response.status}`);
+      
+    }
+}
+
+export async function UpdateCoffeeName(id: number, newName: object): Promise<void>{
+  const response = await fetch(`${BASE_URL}/Kaffi/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type" : "application/json" },
+    body: JSON.stringify(newName),
+
+  });
+
+  if (!response.ok) {
+      throw new Error(`Post responded with code: ${response.status}`);
+      
+    }
 }
 
 
