@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import type { Coffee } from "../Types/Coffee";
 import { FetchRecCoffee } from "../Api/apiKaffi";
 import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
-import { MoveLeft } from "lucide-react"
+import { MoveLeft, TriangleAlert } from "lucide-react"
 import CoffeeBeans from "../assets/coffee-bean-bag.svg"
 import "../Style/CoffeeViewStyle.css"
 
@@ -45,8 +45,24 @@ export function RecView() {
         return () => controller.abort();
     }, [recKey])
 
-    if (loading) { return (<p>Laster . . .</p>) }
-    if (error) { return (<p>Noe gikk galt: {error}</p>) }
+    if (loading) { return (
+        <section className="info-container">
+            <p>Laster . . .</p>
+        </section>
+    )}
+    if (error) { return (
+        <section className="info-container">
+            <div className="error-banner">
+                <TriangleAlert className="error-icon"/>
+                <p>{error}</p>
+            </div>
+            <NavigationLink to="/">
+                <MoveLeft />
+                Tilbake
+            </NavigationLink>
+        </section>
+
+    )}
     if (recCoffee === undefined) { return (<p>Ingen kaffer funnet</p>) }
 
 

@@ -14,7 +14,7 @@
   --border: #E7E0D8;
 
 
-  font: 18px/145% var(--sans);
+  font: 18px/145% 'Plus Jakarta Sans', sans-serif;
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -50,9 +50,10 @@
 } */
 
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width:  100%;
+  max-width: 1025px;
   margin: 0 auto;
+  padding-inline: 16px;
   text-align: center;
   min-height: 100svh;
   display: flex;
@@ -63,6 +64,9 @@
 body {
   margin: 0;
   background-color: var(--bg);
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 h1,
@@ -96,8 +100,23 @@ p {
 
 .logo{
   margin-top: 50px;
-  width: 520px;
+  width: min(520px, 100%);
 }
 
+.content{
+  display: flex;
+  flex-direction: column;
+  gap: 42px;
+  align-items: center;
+  margin-bottom: 100px;
+}
+
+.nvgt-container {
+  margin-top: 25px;
+  width: 100%;
+  padding-right: clamp(0px, 4vw, 50px);
+  display: flex;
+  justify-content: flex-end;
+}
 
 
