@@ -73,6 +73,7 @@ export function RecView() {
                         <p>Bønnetype: {recCoffee?.variety}</p>
                         <p>Land: {recCoffee?.countryName}</p>
                         <p>Kontinent: {recCoffee?.continentName}</p>
+                        <p>Kan kjøpes hos: Kaffebrenneriet</p>
                     </div>
                 </div>
             </section>
