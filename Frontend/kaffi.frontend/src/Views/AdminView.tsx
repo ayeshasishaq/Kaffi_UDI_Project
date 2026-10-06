@@ -293,8 +293,8 @@ export function AdminView () {
                     <>
                         <div className="coffee-container">
                             <p><strong>{selectedCoffee?.coffeeName}</strong></p>
-                            <div className="flavours-container">
                                 <p>Smakstoner: </p>
+                            <div className="flavours-container">
                                 {selectedCoffee?.flavours.map((flavour) => (
                                     <p key={flavour}>{flavour}</p>
                                 ))}
@@ -341,8 +341,8 @@ export function AdminView () {
                                     <Trash/>
                                 </IconBtn>
                             </div>
-                            <div className="flavours-container">
                                 <p>Smakstoner: </p>
+                            <div className="flavours-container">
                                 {selectedCoffee?.flavours.map((flavour) => (
                                     <p key={flavour}>{flavour}</p>
                                 ))}
