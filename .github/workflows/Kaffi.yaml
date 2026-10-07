@@ -59,7 +59,7 @@ jobs:
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@v2
         with:
+          containerAppEnvironment: cae-kaffi-finalproject
           imageToDeploy: ${{ vars.ACR_RegisteryName }}/kaffi-frontend:${{ steps.ts.outputs.value }}
-          acrName: finalproject2026
           containerAppName: ${{vars.ContainerAppName}}
           resourceGroup: rg-brights-joma-01
