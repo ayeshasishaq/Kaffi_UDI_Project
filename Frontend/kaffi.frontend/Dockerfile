@@ -3,8 +3,7 @@ FROM node:20-alpine AS build
 WORKDIR /src
 COPY . ./
 RUN npm ci
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_API_URL=https://ca-kaffi-backend.gentlegrass-7048958f.norwayeast.azurecontainerapps.io
 RUN npm run build
 
 FROM nginx:alpine AS base
