@@ -48,7 +48,5 @@ jobs:
         with:
           context: ./Frontend/kaffi.frontend
           push: true
-          build-args: |
-            VITE_API_URL=${{ vars.VITE_API_URL }}
           tags: ${{ vars.ACR_RegisteryName }}/frontend:${{ steps.ts.outputs.value }}
 
