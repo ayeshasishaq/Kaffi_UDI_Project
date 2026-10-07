@@ -42,7 +42,7 @@ jobs:
       - name: Docker build and push
         uses: docker/build-push-action@v7
         with:
-          context: Kaffi_UDI_Project/Frontend/kaffi.frontend
+          context: ./Frontend/kaffi.frontend
           push: true
           tags: ${{ vars.ACR_RegisteryName }}/frontend:${{ steps.ts.outputs.value }}
 
