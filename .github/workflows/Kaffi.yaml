@@ -29,7 +29,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v7
 
-      - name: Login to azure image repository
+      - name: Login to docker image repository
         uses: docker/login-action@v4
         with:
           registry: ${{vars.ACR_RegisteryName}}
@@ -48,5 +48,18 @@ jobs:
         with:
           context: ./Frontend/kaffi.frontend
           push: true
-          tags: ${{ vars.ACR_RegisteryName }}/frontend:${{ steps.ts.outputs.value }}
+          tags: ${{ vars.ACR_RegisteryName }}/kaffi-frontend:${{ steps.ts.outputs.value }}
 
+
+      - name: Log into azure
+        uses: azure/login@v3
+        with:
+          creds: ${{secrets.DEPLOYMENT_CREDENTIALS}}
+ 
+      - name: Deploy Container App
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          imageToDeploy: ${{ vars.ACR_RegisteryName }}/kaffi-frontend:${{ steps.ts.outputs.value }}
+          acrName: finalproject2026
+          containerAppName: ${{vars.ContainerAppName}}
+          resourceGroup: rg-brights-joma-01
