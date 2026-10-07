@@ -25,6 +25,10 @@ jobs:
   docker-build-frontend:
     runs-on: ubuntu-latest
     steps: 
+
+      - name: Check out repository code
+        uses: action/checkout@v7
+
       - name: Login to azure image repository
         uses: docker/login-action@v4
         with:
@@ -45,9 +49,4 @@ jobs:
           context: ./Frontend/kaffi.frontend
           push: true
           tags: ${{ vars.ACR_RegisteryName }}/frontend:${{ steps.ts.outputs.value }}
-
-
-
-
-
 
