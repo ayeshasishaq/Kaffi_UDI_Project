@@ -75,7 +75,7 @@ export function RecView() {
 
     return (
         <>
-            <section className="coffee-content">
+            <section className="content">
                 <div className="nvgt-container">
                     <NavigationLink to="/">
                         <MoveLeft />
