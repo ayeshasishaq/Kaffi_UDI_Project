@@ -51,6 +51,7 @@ namespace Kaffi.Backend
 
             app.UseRouting();
             app.UseCors("MultipleOriginPolicy");
+
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
