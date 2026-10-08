@@ -15,16 +15,14 @@ namespace Kaffi.Backend
                 options.AddPolicy("AllowMyFrontend",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:53789")
+                        policy.WithOrigins("http://localhost:53789", "https://ca-kaffi-frontend.gentlegrass-7048958f.norwayeast.azurecontainerapps.io")
                               .AllowAnyHeader()
                               .AllowAnyMethod()
-                              // Kan brukes eller fjernes for auth eller cookies
                               .AllowCredentials();
+                        
                     });
             });
 
-            // Denne gjør at vi fjerner reference cycles når vi bruker navigation properties
-            // Denne kan fjernes når vi kun returnerer DTO's istedenfor selve database objektet
             builder.Services.AddControllers()
             .AddJsonOptions(o =>
                 o.JsonSerializerOptions.ReferenceHandler =
