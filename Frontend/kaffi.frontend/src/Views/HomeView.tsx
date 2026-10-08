@@ -20,9 +20,11 @@ export function HomeView() {
 
     function toggleFlavour(id: number) {
         setNoMatch(false);
-        setSelected((prev) =>
-            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        );
+        setSelected((prev) => {
+            if (prev.includes(id)) return prev.filter((x) => x !== id);
+            if (prev.length >= 3) return prev;
+            return [...prev, id];
+        });
     }
 
     const getFlavours = async () => {
@@ -32,13 +34,17 @@ export function HomeView() {
     }
 
     function handleSearch(selectedFlavourIds: number[]) {
+    if (selectedFlavourIds.length < 2) {
+        setNoMatch(true);
+        return;
+    }
         navigate(buildRecPath(selectedFlavourIds));
     }
 
-    useEffect(() => {
+        useEffect(() => {
         getFlavours();  
     }, []);
-
+    
     if (loading) { return (
         <section className="info-container">
             <p>Laster . . .</p>
@@ -65,6 +71,7 @@ export function HomeView() {
                             <input
                                 type="checkbox"
                                 checked={selected.includes(flavour.id)}
+                                disabled={!selected.includes(flavour.id) && selected.length >= 3}
                                 onChange={() => toggleFlavour(flavour.id)}
                             />
                             <p>{flavour.name}</p>
