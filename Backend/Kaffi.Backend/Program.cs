@@ -19,7 +19,7 @@ namespace Kaffi.Backend
                               .AllowAnyHeader()
                               .AllowAnyMethod()
                               .AllowCredentials();
-                        
+
                     });
             });
 
@@ -50,7 +50,6 @@ namespace Kaffi.Backend
             }
 
             app.UseRouting();
-
             app.UseCors("MultipleOriginPolicy");
 
             app.UseHttpsRedirection();

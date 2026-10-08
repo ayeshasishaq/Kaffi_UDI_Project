@@ -12,6 +12,6 @@ namespace Kaffi.Backend.DTOs
         [Required]
         public int VarietyId { get; set; }
         [Required]
-        public List<int> FlavourIds { get; set; }
+        public List<int> FlavourIds { get; set; } = new();
     }
 }
