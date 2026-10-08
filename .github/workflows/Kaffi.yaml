@@ -2,7 +2,7 @@ name: Github Kaffi Action
 
 on:  
   push:
-    branches: [main, Feat/add-deploy-backend-yaml]
+    branches: [main, Feat/add-deploy-backend-yaml, Chore/add-azure-url]
 
 jobs:
   # test-fromtend: 
