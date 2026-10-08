@@ -32,7 +32,13 @@ export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal):
   const params = new URLSearchParams();
   flavourIds.forEach((id) => params.append("ids", id.toString()))
 
-  const response = await fetch(`${BASE_URL}/Kaffi/recommendations?${params}`, { signal })
+  const response = await fetch(`${BASE_URL}/Kaffi/recommendations?${params}`, { 
+    signal,
+    method: "GET",
+    headers: {
+    "Content-Type": "application/json",
+  },
+}) 
 
   if (response.status === 204) return null; // ingen kaffe matchet
   
