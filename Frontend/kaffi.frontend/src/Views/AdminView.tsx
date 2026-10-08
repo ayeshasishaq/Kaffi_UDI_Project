@@ -45,19 +45,20 @@ export function AdminView () {
         setToastVisible(true);
     }
 
-    function toggleFlavour(id: number) {
-        //setNoMatch(false);
-        setSelected((prev) =>
-            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        );
-    }
+   function toggleFlavour(id: number) {
+       setSelected((prev) => {
+           if (prev.includes(id)) return prev.filter((x) => x !== id);
+           if (prev.length >= 3) return prev;
+           return [...prev, id];
+       });
+   }
 
     const getCountries = async () => {
         const result =  await FetchCountries();
         setCountries(result);
     }
 
-    const getVarieties = async () => {
+        const getVarieties = async () => {
         const result = await FetchVarities();
         setVarieties(result);
         
@@ -75,8 +76,7 @@ export function AdminView () {
 
    async function  handleAddCoffee() {
     if (!coffeeName.trim() || !selectedCountry || !selectedVariety || selected.length === 0) {
-        showToast({ type: "error", message: "Fyll ut navn, land, variant og minst én smak." });
-        console.log(error)
+        showToast({ type: "error", message: "Fyll ut navn, land, variant og nøyaktig 3 smaker." });
         return;
     }
 
