@@ -8,7 +8,6 @@ import type { Flavour } from "../Types/Flavour";
 // const BASE_URL = "https://ca-kaffi-backend.gentlegrass-7048958f.norwayeast.azurecontainerapps.io/api";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-
 export async function fetchData() {
   try {
     const response = await fetch(`https://localhost:7222`, {
