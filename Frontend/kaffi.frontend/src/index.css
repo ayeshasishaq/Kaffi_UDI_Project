@@ -14,7 +14,7 @@
   --border: #E7E0D8;
 
 
-  font: 18px/145% var(--sans);
+  font: 18px/145% 'Plus Jakarta Sans', sans-serif;
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -50,14 +50,10 @@
 } */
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
+  align-items: center;
   text-align: center;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 }
 
 body {
@@ -95,9 +91,40 @@ p {
 }
 
 .logo{
-  margin-top: 50px;
-  width: 520px;
+  margin-top: 16px;
+  width: min(520px, 100%);
 }
 
+.content{
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 100px;
+  padding: 16px;
+  min-height: 100svh;
+}
 
+.nvgt-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+ @media screen and (min-width: 393px) {
+    .content{
+      width: 386px;
+    }
+  }
 

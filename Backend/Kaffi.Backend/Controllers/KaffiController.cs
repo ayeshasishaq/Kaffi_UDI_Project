@@ -5,60 +5,78 @@ using Microsoft.AspNetCore.Mvc;
 namespace Kaffi.Backend.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("api/Kaffi")]
     public class KaffiController : Controller
     {
         private IKaffiDao _kaffiDao;
-        public KaffiController(IKaffiDao kaffiDao)
+        private ILogger<KaffiController> _logger;
+        public KaffiController(IKaffiDao kaffiDao, ILogger<KaffiController> logger)
         {
             _kaffiDao = kaffiDao;
+            _logger = logger;
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetCoffe(int id)
         {
+            if (id <= 0)
+            {
+                _logger.LogWarning("ID cannot be below or 0, actual ID was: {id}", id);
+                return BadRequest($"ID cannot be less than or zero, actual ID was: {id}");
+            }
+
             try
             {
                 var coffee = await _kaffiDao.GetCoffeeByIdAsync(id);
 
                 if (coffee == null)
                 {
-                    return NotFound("Coffee could not be found, please try another coffee");
+                    _logger.LogInformation("Coffee with ID: {id} could not be found", id);
+                    return NotFound(" Object not found");
                 }
+
                 return Ok(coffee);
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex, "Error when trying to get coffee with ID: {id}", id);
+                return StatusCode(500, "Error when trying to get object");
             }
-            return Ok(await _kaffiDao.GetCoffeeByIdAsync(id));
+
         }
 
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteCoffeeAsync(int id)
         {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Invalid ID received {id}:", id);
+                return BadRequest($"ID cannot be less than or zero, actual ID was: {id}");
+            }
+
             try
             {
                 var deletedCoffee = await _kaffiDao.DeleteCoffeeByIdAsync(id);
 
                 if (!deletedCoffee)
                 {
+                    _logger.LogInformation("Coffee with ID: {id} not found", id);
                     return NotFound();
                 }
 
-                return Ok();
+                return NoContent();
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Error while trying to delete coffee");
+                _logger.LogError(ex, "Error when trying to delete coffee with ID: {id}", id);
+                return StatusCode(500, "Error while trying to delete object");
             }
         }
 
         [HttpPost]
-        [Route("")]
         public async Task<IActionResult> CreateCoffeeAsync(CreateCoffeeRequestDto request)
         {
             var newCoffee = await _kaffiDao.CreateCoffeeAsync(request);
@@ -66,19 +84,38 @@ namespace Kaffi.Backend.Controllers
         }
 
         [HttpGet]
-        [Route("by-flavours")]
-
         public async Task<IActionResult> GetCoffeeBasedOnFlavour([FromQuery] List<int> ids)
         {
-            var coffeeList = await _kaffiDao.GetCoffeeBasedOnFlavourSelected(ids);
-            return Ok(coffeeList);
+            if (ids.Count < 3)
+            {
+                _logger.LogWarning("Flavourlist cannot contain less than 3 positive numbers {ids}", ids);
+                return BadRequest("3 flavours are needed in order to get a object");
+            }
+
+            try
+            {
+                var coffeeList = await _kaffiDao.GetCoffeesBasedOnFlavour(ids);
+                return Ok(coffeeList);
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error when trying to get coffee based on flavours");
+                throw;
+            }
         }
 
         [HttpGet]
-        [Route("first-match")]
+        [Route("recommendations")]
         public async Task<IActionResult> GetFirstCoffeeRecByFlavour([FromQuery] List<int> ids)
         {
             var coffee = await _kaffiDao.GetRecCoffee(ids);
+
+            if (coffee == null)
+            {
+                return NotFound();
+            }
+
             return Ok(coffee);
         }
 
@@ -101,6 +138,26 @@ namespace Kaffi.Backend.Controllers
         public async Task<IActionResult> GetVarieties()
         {
             return Ok(await _kaffiDao.GetAllVarietiesAsync());
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public async Task<IActionResult> GetAllCoffees()
+        {
+            return Ok(await _kaffiDao.GetAllCoffees());
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateCoffeeName(int id, [FromBody] EditNameRequestDto request)
+        {
+            var updated = await _kaffiDao.EditCoffeeNameByIdAsync(id, request.Name);
+
+            if (!updated)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }

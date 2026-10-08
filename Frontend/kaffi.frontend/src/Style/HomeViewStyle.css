@@ -1,11 +1,4 @@
-.content{
-    display: flex;
-    flex-direction: column;
-    gap: 42px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 100px;
-}
+
 
 .flavour-grid {
   display: grid;
@@ -32,9 +25,3 @@
     width: 18rem;
 }
 
-.nvgt-container {
-  margin-top: 25px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}

@@ -1,18 +1,21 @@
+import Logo from "../assets/Logo.png"
+import "../Style/HomeViewStyle.css"
 import { Btn } from "../Components/Btn/btn"
 import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
 import { Lock } from 'lucide-react'
-import Logo from "../assets/Logo.png"
-import "../Style/HomeViewStyle.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { flavours, coffees, findMatchingCoffee } from "../Data/TestData";
-import { fetchData } from "../Api/apiKaffi";;
+import { FetchFlavours } from "../Api/apiKaffi"
+import { buildRecPath } from "../Utils/recParams"
+import type { Flavour } from "../Types/Flavour"
+
 
 export function HomeView() {
     const [selected, setSelected] = useState<number[]>([]);
+    const [flavours, setFlavours] = useState<Flavour[]>([]);
     const [noMatch, setNoMatch] = useState(false);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const [coffee, setCoffee] = useState();
 
 
     function toggleFlavour(id: number) {
@@ -24,24 +27,29 @@ export function HomeView() {
         });
     }
 
-    // function handleRecommend() {
-    //     const match = findMatchingCoffee(selected, coffees);
-    //     if (match) {
-    //         navigate(`/coffee/${match.id}`);
-    //     } else {
-    //         setNoMatch(true);
-    //     }
-    // }
+    const getFlavours = async () => {
+        const result = await FetchFlavours();
+        setFlavours(result);
+        setLoading(false);
+    }
 
     function handleSearch(selectedFlavourIds: number[]) {
     if (selectedFlavourIds.length < 2) {
         setNoMatch(true);
         return;
     }
-    const params = new URLSearchParams();
-    selectedFlavourIds.forEach((id) => params.append("ids", id.toString()));
-    navigate(`/rec?${params}`);
+        navigate(buildRecPath(selectedFlavourIds));
     }
+
+        useEffect(() => {
+        getFlavours();  
+    }, []);
+    
+    if (loading) { return (
+        <section className="info-container">
+            <p>Laster . . .</p>
+        </section>
+    )}
 
     return (
         <>

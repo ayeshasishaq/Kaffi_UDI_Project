@@ -5,6 +5,7 @@ namespace Kaffi.Backend.Tests;
 
 public class ApiTests
 {
+
     private HttpClient _client = null!;
 
     [SetUp]
@@ -19,48 +20,48 @@ public class ApiTests
         _client.Dispose();
     }
 
-    private async Task<JsonElement> HentKaffe(int id)
+    private async Task<JsonElement> GetCoffee(int id)
     {
-        var json = await _client.GetStringAsync($"/{id}");
+        var json = await _client.GetStringAsync($"/api/kaffi/{id}");
         return JsonDocument.Parse(json).RootElement;
     }
 
-    [Test]
-    public async Task GetCoffee_1_GirOk()
+    [TestCase(2)]
+    public async Task GetCoffeeReturnsOk(int id)
     {
-        var response = await _client.GetAsync("/1");
+        var response = await _client.GetAsync($"/api/kaffi/{id}");
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
-    [TestCase(1, "Yirgacheffe")]
+    [Test]
+    public async Task GetCoffeeThatDoesNotExist_ShouldReturnNoContent()
+    {
+        var response = await _client.GetAsync("/api/kaffi/999");
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }
+
     [TestCase(2, "Cerrado")]
     [TestCase(3, "Sumatra")]
     [TestCase(4, "Huila")]
     [TestCase(5, "Gesha")]
-    public async Task GetCoffee_HarRiktigNavn(int id, string forventetNavn)
+    public async Task GetCoffee_HasCorrectName_ShouldReturnIsEqualTo(int id, string expectedName)
     {
-        var kaffe = await HentKaffe(id);
-        Assert.That(kaffe.GetProperty("name").GetString(), Is.EqualTo(forventetNavn));
+        var coffee = await GetCoffee(id);
+        Assert.That(coffee.GetProperty("name").GetString(), Is.EqualTo(expectedName));
+        Console.WriteLine(coffee);
     }
 
-    [Test]
-    public async Task GetCoffee_1_KommerFraEtiopia()
+    [TestCase(6, "Etiopia")]
+    public async Task GetCoffee_ShouldComeFromEtiopia(int id, string expectedName)
     {
-        var kaffe = await HentKaffe(1);
-        Assert.That(kaffe.GetProperty("country").GetProperty("name").GetString(), Is.EqualTo("Etiopia"));
+        var coffee = await GetCoffee(id);
+        Assert.That(coffee.GetProperty("country").GetProperty("name").GetString(), Is.EqualTo(expectedName));
     }
 
-    [Test]
-    public async Task GetCoffee_1_HarTreSmaker()
+    [TestCase(2)]
+    public async Task GetCoffee_ShouldContainThreeItems(int id)
     {
-        var kaffe = await HentKaffe(1);
-        Assert.That(kaffe.GetProperty("coffeeFlavours").GetArrayLength(), Is.EqualTo(3));
-    }
-
-    [Test]
-    public async Task GetCoffee_SomIkkeFinnes_GirNoContent()
-    {
-        var response = await _client.GetAsync("/999");
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+        var coffee = await GetCoffee(id);
+        Assert.That(coffee.GetProperty("coffeeFlavours").GetArrayLength(), Is.EqualTo(3));
     }
 }
