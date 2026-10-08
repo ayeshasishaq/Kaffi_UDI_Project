@@ -26,14 +26,14 @@ export async function fetchData() {
   }
 }
 
-export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal): Promise<Coffee | undefined> {
+export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal): Promise<Coffee | null> {
 
   const params = new URLSearchParams();
   flavourIds.forEach((id) => params.append("ids", id.toString()))
 
   const response = await fetch(`${BASE_URL}/Kaffi/recommendations?${params}`, { signal })
 
-  if (response.status === 204) return undefined; // ingen kaffe matchet
+  if (response.status === 204) return null; // ingen kaffe matchet
   
 
   if (!response.ok) {
