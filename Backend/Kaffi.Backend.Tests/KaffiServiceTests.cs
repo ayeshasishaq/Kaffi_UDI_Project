@@ -145,7 +145,6 @@ public class KaffiServiceTests
     [TestCase("Guji")]
     public async Task EditCoffee_ShouldChangeName(string newName)
     {
-        // ID: 1, Name: Yirgacheffe
         var coffeeResult = await _service.EditCoffeeNameByIdAsync(1, newName);
         var updatedCoffee = await _service.GetCoffeeByIdAsync(1);
 
