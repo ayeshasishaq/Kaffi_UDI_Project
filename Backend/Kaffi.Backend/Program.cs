@@ -12,7 +12,7 @@ namespace Kaffi.Backend
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowMyFrontend",
+                options.AddPolicy("MultipleOriginPolicy",
                     policy =>
                     {
                         policy.WithOrigins("http://localhost:53789", "https://ca-kaffi-frontend.gentlegrass-7048958f.norwayeast.azurecontainerapps.io")
