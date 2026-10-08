@@ -2,7 +2,7 @@ name: Github Kaffi Action
 
 on:  
   push:
-    branches: main
+    branches: [main, Feat/add-deploy-backend-yaml]
 
 jobs:
   # test-fromtend: 
@@ -50,6 +50,45 @@ jobs:
           push: true
           tags: ${{ vars.ACR_RegisteryName }}/kaffi-frontend:${{ steps.ts.outputs.value }}
 
+      - name: Log into azure
+        uses: azure/login@v3
+        with:
+          creds: ${{secrets.DEPLOYMENT_CREDENTIALS}}
+ 
+      - name: Deploy Container App
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppEnvironment: ${{vars.CONTAINERAPPENV}}
+          imageToDeploy: ${{ vars.ACR_RegisteryName }}/kaffi-frontend:${{ steps.ts.outputs.value }}
+          containerAppName: ${{vars.FRONTENDCONTAINERAPPNAME}}
+          resourceGroup: ${{vars.RSGROUP}}
+
+  docker-build-backend:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Login to docker image repository
+        uses: docker/login-action@v4
+        with:
+          registry: ${{vars.ACR_RegisteryName}}
+          username: ${{secrets.ACR_USERNAME}}
+          password: ${{secrets.ACR_PASSWORD}}
+
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v4
+        
+      - name: Generate timestamp
+        id: ts
+        run: echo "value=$(date -u +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"  
+
+      - name: Docker build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Backend/Kaffi.Backend
+          push: true
+          tags: ${{ vars.ACR_RegisteryName }}/kaffi-backend:${{ steps.ts.outputs.value }}
 
       - name: Log into azure
         uses: azure/login@v3
@@ -59,7 +98,7 @@ jobs:
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@v2
         with:
-          containerAppEnvironment: cae-kaffi-finalproject
-          imageToDeploy: ${{ vars.ACR_RegisteryName }}/kaffi-frontend:${{ steps.ts.outputs.value }}
-          containerAppName: ${{vars.ContainerAppName}}
-          resourceGroup: rg-brights-joma-01
+          containerAppEnvironment: ${{vars.CONTAINERAPPENV}}
+          imageToDeploy: ${{ vars.ACR_RegisteryName }}/kaffi-backend:${{ steps.ts.outputs.value }}
+          containerAppName: ${{vars.BACKENDCONTAINERAPPNAME}}
+          resourceGroup: ${{vars.RSGROUP}}
