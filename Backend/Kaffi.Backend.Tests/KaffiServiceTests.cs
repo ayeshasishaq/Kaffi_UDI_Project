@@ -141,4 +141,19 @@ public class KaffiServiceTests
             Assert.That(coffee.Id, Is.GreaterThan(0));
         }
     }
+
+    [TestCase("Guji")]
+    public async Task EditCoffee_ShouldChangeName(string newName)
+    {
+        // ID: 1, Name: Yirgacheffe
+        var coffeeResult = await _service.EditCoffeeNameByIdAsync(1, newName);
+        var updatedCoffee = await _service.GetCoffeeByIdAsync(1);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(coffeeResult, Is.True);
+            Assert.That(updatedCoffee, Is.Not.Null);
+            Assert.That(updatedCoffee?.Name, Is.EqualTo(newName));
+        }
+    }
 }

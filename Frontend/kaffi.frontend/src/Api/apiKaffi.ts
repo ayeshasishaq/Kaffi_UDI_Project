@@ -36,7 +36,7 @@ export async function FetchRecCoffee(flavourIds: number[], signal: AbortSignal) 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(`Det finnes ingen kaffe som passer dine smaksløker`)
+    throw new Error(`Det finnes ingen kaffe i databasen som passer dine smaksløker`)
   }
 
   return data as Coffee;
