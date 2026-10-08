@@ -4,8 +4,9 @@ import type { Variety } from "../Types/Variety";
 import type { NewCoffee } from "../Types/NewCoffee";
 import type { Flavour } from "../Types/Flavour";
 
+// const BASE_URL = "http://localhost:5054/api";
+const BASE_URL = "https://ca-kaffi-backend.gentlegrass-7048958f.norwayeast.azurecontainerapps.io/api";
 
-const BASE_URL = "http://localhost:5054/api"; // Bytt ut med environent variable
 
 export async function fetchData() {
   try {
