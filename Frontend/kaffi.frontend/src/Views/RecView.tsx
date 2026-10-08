@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import type { Coffee } from "../Types/Coffee";
+import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { FetchRecCoffee } from "../Api/apiKaffi";
+import { parseFlavourIds } from "../Utils/recParams";
 import { NavigationLink } from "../Components/NavigationLink/NavigationLink"
 import { MoveLeft, TriangleAlert } from "lucide-react"
 import CoffeeBeans from "../assets/coffee-bean-bag.svg"
@@ -11,29 +12,23 @@ export function RecView() {
 
     const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(true);
-    const [recCoffee, setRecCoffee] = useState<Coffee>();
+    const [recCoffee, setRecCoffee] = useState<Coffee | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const flavourIds =  useMemo(() => parseFlavourIds(searchParams), [searchParams]);
 
-    const recKey = searchParams.getAll("ids").join(",");
 
     useEffect(() => {
-        const coffeRecIdsList = recKey
-            .split(",")
-            .map(Number)
-            .filter((n) => Number.isInteger(n) && n > 0);
 
-        if (coffeRecIdsList.length === 0) {
-
+        if (flavourIds.length === 0) {
             setLoading(false);
             return;
-
         }
 
         const controller = new AbortController();
         setLoading(true);
         setError(null);
 
-        FetchRecCoffee(coffeRecIdsList, controller.signal)
+        FetchRecCoffee(flavourIds, controller.signal)
             .then(setRecCoffee)
             .catch((err) => {
                 if (err.name !== "AbortError") setError(err.message);
@@ -43,7 +38,7 @@ export function RecView() {
             });
 
         return () => controller.abort();
-    }, [recKey])
+    }, [flavourIds])
 
     if (loading) { return (
         <section className="info-container">
@@ -63,12 +58,24 @@ export function RecView() {
         </section>
 
     )}
-    if (recCoffee === undefined) { return (<p>Ingen kaffer funnet</p>) }
+    if (recCoffee === null) { return (
+                <section className="info-container">
+            <div className="error-banner">
+                <TriangleAlert className="error-icon"/>
+                <p>Ingen kaffer funnet</p>
+            </div>
+            <NavigationLink to="/">
+                <MoveLeft />
+                Tilbake
+            </NavigationLink>
+        </section>
+    
+    )}
 
 
     return (
         <>
-            <section className="coffee-content">
+            <section className="content">
                 <div className="nvgt-container">
                     <NavigationLink to="/">
                         <MoveLeft />
